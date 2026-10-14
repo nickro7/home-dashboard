@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Homeboard">
+  <meta name="theme-color" content="#0c1422">
+  <title>Homeboard V3 · Aarhus & Brazil</title>
+  <style>
+    :root { --bg:#0b1321; --surface:#142136; --surface2:#182940; --edge:#273953; --text:#f4f5f7; --muted:#94a6be; --faint:#6b7e97; --teal:#7ddbc2; --amber:#f9ca89; --blue:#83bafb; }
+    * { box-sizing:border-box; }
+    html { background:var(--bg); }
+    body { margin:0; color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; font-size:16px; -webkit-font-smoothing:antialiased; background:radial-gradient(ellipse at 20% 0%,#17233a 0%,#0b1321 46%,#0b1321 100%); min-height:100vh; }
+    button,input { font:inherit; }
+    button { -webkit-tap-highlight-color:transparent; cursor:pointer; }
+    .app { max-width:1440px; margin:0 auto; padding:20px 24px 24px; }
+    .topbar { height:57px; display:flex; align-items:center; justify-content:space-between; padding:0 4px; margin-bottom:16px; }
+    .brand { display:flex; align-items:center; }
+    .brand-icon { width:34px; height:34px; line-height:34px; background:#24443f; color:var(--teal); font-size:21px; text-align:center; border-radius:10px; margin-right:12px; }
+    .brand-name { font-size:17px; font-weight:780; letter-spacing:.03em; }
+    .brand-sub { color:var(--faint); margin-top:2px; font-size:11px; letter-spacing:.07em; text-transform:uppercase; }
+    .header-right { display:flex; align-items:center; }
+    .status-dot { display:inline-block; width:7px; height:7px; background:var(--teal); border-radius:50%; margin-right:8px; box-shadow:0 0 10px rgba(125,219,194,.4); }
+    .top-status { color:var(--muted); font-size:12px; margin-right:18px; }
+    .icon-button { width:41px; height:41px; border:1px solid var(--edge); border-radius:12px; color:var(--text); background:#1a2940; font-size:20px; }
+    .icon-button:active,.small-button:active { background:#334560; }
+    .dashboard { display:grid; grid-template-columns: 1.18fr .82fr; grid-gap:16px; height:calc(100vh - 138px); min-height:570px; }
+    .left { display:grid; grid-template-rows: 1.13fr .82fr .58fr; grid-gap:16px; min-width:0; min-height:0; }
+    .right { min-width:0; min-height:0; }
+    .card { position:relative; overflow:hidden; border-radius:19px; background:var(--surface); border:1px solid rgba(148,166,190,.12); }
+    .hero { background:linear-gradient(126deg,#203853 0%,#1b304a 47%,#15354b 100%); padding:25px 30px; }
+    .hero:before { content:""; position:absolute; height:300px; width:300px; border-radius:50%; right:-78px; top:-156px; background:radial-gradient(circle,rgba(115,204,200,.17) 0%,rgba(115,204,200,0) 70%); pointer-events:none; }
+    .section-eyebrow { font-size:11px; color:var(--muted); letter-spacing:.145em; text-transform:uppercase; font-weight:750; }
+    .hero-header { display:flex; justify-content:space-between; align-items:start; position:relative; z-index:1; }
+    #greeting { font-size:14px; color:#dce8f1; margin-top:8px; }
+    .hero-location { background:rgba(11,19,33,.27); color:#c8e4e5; padding:7px 11px; font-size:12px; border-radius:30px; }
+    .hero-bottom { position:absolute; left:30px; right:30px; bottom:23px; display:flex; justify-content:space-between; align-items:end; z-index:1; }
+    .time { font-size:88px; line-height:1; letter-spacing:-.067em; font-weight:320; font-variant-numeric:tabular-nums; margin-left:-5px; white-space:nowrap; }
+    .today { font-size:16px; color:#b7c8d7; margin-top:11px; }
+    .outside { text-align:right; min-width:115px; margin-left:8px; }
+    .outside-icon { font-size:37px; line-height:1; margin-bottom:3px; }
+    .outside-temp { font-size:43px; font-weight:400; line-height:1.1; letter-spacing:-.04em; font-variant-numeric:tabular-nums; }
+    .outside-label { color:#bbd6df; font-size:12px; margin-top:6px; }
+    .outside-desc { color:var(--teal); font-size:12px; margin-top:4px; }
+    .forecast { padding:21px 25px 18px; display:flex; flex-direction:column; }
+    .card-heading { display:flex; justify-content:space-between; align-items:center; }
+    .card-title { font-weight:730; font-size:17px; letter-spacing:-.015em; }
+    .card-note { color:var(--faint); font-size:11px; }
+    .forecast-grid { display:grid; grid-template-columns:repeat(5,1fr); grid-gap:6px; flex:1; margin-top:19px; }
+    .forecast-day { text-align:center; border-right:1px solid rgba(148,166,190,.11); display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding:4px 1px 8px; }
+    .forecast-day:last-child { border-right:0; }
+    .forecast-day-name { font-size:12px; font-weight:620; color:#c8d3e0; }
+    .forecast-icon { font-size:31px; line-height:1.12; }
+    .forecast-temps { font-size:15px; font-weight:690; font-variant-numeric:tabular-nums; }
+    .forecast-low { color:var(--faint); font-weight:480; }
+    .forecast-rain { color:var(--blue); font-size:11px; }
+    .details { display:grid; grid-template-columns:1fr 1fr; grid-gap:16px; }
+    .detail-card { padding:16px 20px; display:flex; flex-direction:column; justify-content:space-between; min-width:0; }
+    .detail-top { color:var(--muted); font-size:11px; font-weight:750; text-transform:uppercase; letter-spacing:.10em; }
+    .detail-value { font-size:24px; font-weight:580; line-height:1.15; margin-top:8px; }
+    .detail-foot { color:var(--faint); font-size:11px; margin-top:3px; }
+    .sun-times { display:flex; align-items:center; justify-content:space-between; }
+    .sun-times .divider-v { width:1px; height:35px; background:var(--edge); margin:0 7px; }
+    .sun-emoji { color:var(--amber); font-size:13px; }
+    .sensor-soon { color:var(--amber); font-size:19px; letter-spacing:.025em; }
+    .calendar { height:100%; padding:22px 22px 18px; display:flex; flex-direction:column; }
+    .calendar-head { display:flex; justify-content:space-between; align-items:center; }
+    .calendar-actions { display:flex; align-items:center; }
+    .small-button { color:#c4d3e7; border:1px solid #334864; border-radius:9px; background:#1b2b43; padding:7px 11px; font-size:12px; }
+    .calendar-sub { margin-top:8px; font-size:12px; color:var(--faint); }
+    .week-strip { display:grid; grid-template-columns:repeat(7,1fr); margin-top:22px; grid-gap:5px; }
+    .week-day { text-align:center; padding:7px 0 9px; border-radius:11px; }
+    .week-day.active { background:#254b55; }
+    .week-letter { display:block; font-size:10px; color:var(--faint); margin-bottom:9px; }
+    .week-number { display:block; font-size:14px; font-weight:650; }
+    .week-day.active .week-letter { color:var(--teal); }
+    .week-day.active .week-number { color:white; }
+    .agenda-head { display:flex; justify-content:space-between; align-items:center; margin-top:22px; padding-bottom:13px; border-bottom:1px solid var(--edge); }
+    .agenda-head strong { font-size:12px; color:#c6d5e3; }
+    .agenda-head span { font-size:11px; color:var(--faint); }
+    .agenda-list { overflow-y:auto; -webkit-overflow-scrolling:touch; flex:1; margin-top:8px; min-height:125px; }
+    .agenda-item { display:flex; align-items:stretch; margin:10px 0 13px; min-height:56px; }
+    .agenda-date { width:45px; flex-shrink:0; text-align:center; padding-top:5px; }
+    .agenda-date .number { font-size:22px; line-height:1; font-weight:700; }
+    .agenda-date .weekday { color:var(--faint); font-size:10px; text-transform:uppercase; margin-top:5px; }
+    .agenda-line { width:3px; flex-shrink:0; background:var(--teal); border-radius:4px; margin:2px 13px 2px 4px; }
+    .agenda-content { min-width:0; padding:5px 0; }
+    .agenda-event-name { font-size:14px; font-weight:660; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .agenda-time { color:var(--muted); font-size:12px; margin-top:7px; }
+    .empty-state { margin:21px 0; padding:24px 14px; border:1px dashed #39516e; border-radius:13px; text-align:center; }
+    .empty-symbol { font-size:30px; margin-bottom:10px; }
+    .empty-state strong { display:block; font-size:15px; }
+    .empty-state p { color:var(--muted); font-size:12px; line-height:1.5; margin:9px auto 15px; max-width:240px; }
+    .calendar-footer { border-top:1px solid var(--edge); padding-top:14px; margin-top:7px; display:flex; justify-content:space-between; align-items:center; }
+    .calendar-footer span { font-size:11px; color:var(--muted); }
+    .calendar-link { border:0; padding:3px 0; background:transparent; color:var(--teal); font-size:12px; font-weight:650; }
+    .footer-note { margin-top:10px; text-align:center; color:#4f637d; font-size:10px; }
+    .overlay { position:fixed; top:0; right:0; bottom:0; left:0; background:rgba(4,9,16,.78); z-index:20; display:none; justify-content:center; align-items:center; padding:20px; }
+    .overlay.open { display:flex; }
+    .modal { width:100%; max-width:570px; max-height:92vh; overflow-y:auto; background:#17253a; border:1px solid #3c526a; border-radius:18px; padding:23px; box-shadow:0 25px 80px rgba(0,0,0,.45); }
+    .modal-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+    .modal-head h2 { margin:0; font-size:21px; letter-spacing:-.025em; }
+    .close-button { background:transparent; border:0; font-size:26px; color:var(--muted); padding:0 4px; }
+    .modal-copy { color:var(--muted); font-size:13px; line-height:1.55; margin:0 0 14px; }
+    .tabs { display:grid; grid-template-columns:1fr 1fr 1fr; background:#101d2f; border-radius:10px; padding:4px; margin:15px 0 20px; }
+    .tab { background:transparent; border:0; color:#93a6bb; border-radius:8px; padding:10px 5px; font-size:12px; }
+    .tab.active { background:#2e4863; color:white; font-weight:700; }
+    .tab-page { display:none; }
+    .tab-page.active { display:block; }
+    .field { display:block; margin-top:13px; }
+    .field label { display:block; color:#d4e0ed; font-size:12px; margin-bottom:7px; font-weight:700; }
+    .field input { width:100%; min-height:41px; border:1px solid #3b536e; border-radius:9px; background:#0e1b2e; color:white; padding:9px 11px; font-size:14px; }
+    .field input:focus { outline:1px solid var(--teal); }
+    .field-row { display:grid; grid-template-columns:1fr 1fr; grid-gap:12px; }
+    .action-row { margin-top:17px; display:flex; flex-wrap:wrap; align-items:center; }
+    .primary { background:var(--teal); color:#0b2730; border:0; font-weight:750; padding:11px 15px; border-radius:10px; font-size:13px; margin-right:9px; margin-bottom:7px; }
+    .secondary { background:#2b3c55; color:#e6eef8; border:0; padding:11px 14px; border-radius:10px; font-size:13px; margin-bottom:7px; }
+    .hint { font-size:11px; color:#8ea3ba; line-height:1.55; margin-top:10px; }
+    .hint a { color:var(--teal); }
+    .message { padding:10px 12px; border-radius:9px; background:#25403f; color:#c9f4e5; font-size:12px; line-height:1.45; margin-top:12px; display:none; }
+    .message.error { background:#593335; color:#ffe2d8; }
+    .file-label { display:inline-block; padding:12px 14px; color:#d7f6ed; border:1px dashed #547b85; border-radius:10px; background:#1d3b46; cursor:pointer; font-size:13px; }
+    .file-label input { display:none; }
+    .preview-bar { display:none; position:fixed; bottom:5px; left:5px; background:#b77c3e; color:#111; padding:5px 12px; border-radius:8px; font-size:11px; z-index:5; }
+    @media (max-width:850px) and (orientation:portrait) {
+      .app { padding:12px 12px 20px; } .dashboard { height:auto; min-height:0; display:block; } .left { display:block; } .left .card { margin-bottom:12px; } .hero { height:300px; } .forecast { min-height:205px; } .details { height:130px; } .right { height:450px; margin-top:12px; } .topbar { margin-bottom:8px; }
+    }
+    @media (max-height:700px) and (orientation:landscape) {
+      .app { padding:10px 17px; } .topbar { height:44px; margin-bottom:9px; } .dashboard { height:calc(100vh - 70px); min-height:450px; grid-gap:11px; } .left { grid-gap:11px; } .hero { padding:18px 22px; } .hero-bottom { left:22px; right:22px; bottom:16px; } .time { font-size:76px; } .forecast { padding:15px 17px; } .forecast-grid { margin-top:11px; } .calendar { padding:16px; } .week-strip { margin-top:11px; } .agenda-head { margin-top:12px; } .detail-card { padding:12px 15px; }
+    }
+    @media (max-width:740px) and (orientation:landscape) {
+      .dashboard { grid-template-columns:1fr 1fr; } .hero-bottom { align-items:end; } .time { font-size:59px; } .outside-temp { font-size:32px; } .outside-icon { font-size:25px; } .today { font-size:12px; } .forecast-icon { font-size:22px; } .forecast-temps { font-size:12px; } .detail-value { font-size:19px; }
+    }
+
+    /* HOMEBOARD V3: iPad Air 1 layout, Brazil mini-card and expanded radio */
+    .app { max-width:1400px; padding:11px 17px 10px; }
+    .topbar { height:50px; margin-bottom:9px; }
+    .header-right { min-width:0; }
+    .top-status { margin-right:12px; white-space:nowrap; }
+    .nav-tabs { display:flex; padding:4px; border:1px solid var(--edge); background:#101e30; border-radius:13px; margin:0 18px; }
+    .nav-tab { border:0; color:#a3b5c9; background:transparent; border-radius:9px; padding:9px 17px; font-size:13px; font-weight:700; }
+    .nav-tab.active { background:#28465a; color:#eafff7; }
+    .view { display:none; }
+    .view.active { display:block; }
+    .dashboard { height:calc(100vh - 148px); min-height:510px; grid-gap:10px; grid-template-columns:1.19fr .81fr; }
+    .left { grid-template-rows:1.49fr 1.10fr 1.00fr .70fr; grid-gap:10px; }
+    .hero { padding:16px 22px; }
+    .hero-bottom { left:22px; right:22px; bottom:15px; }
+    .time { font-size:71px; }
+    .today { font-size:13px; margin-top:6px; }
+    .outside-icon { font-size:27px; }
+    .outside-temp { font-size:34px; }
+    .outside-label,.outside-desc { font-size:11px; margin-top:3px; }
+    .forecast { padding:13px 16px 9px; }
+    .forecast-grid { margin-top:10px; }
+    .forecast-day { padding:0 1px 5px; }
+    .forecast-icon { font-size:23px; }
+    .forecast-temps { font-size:13px; }
+    .forecast-rain { font-size:10px; }
+    .card-title { font-size:15px; }
+    .card-note { font-size:10px; }
+    .details { grid-gap:10px; }
+    .detail-card { padding:10px 14px; }
+    .detail-value { font-size:19px; margin-top:5px; }
+    .detail-top { font-size:10px; }
+    .sensor-soon { font-size:15px; }
+    .detail-foot { font-size:10px; }
+    .calendar { padding:17px 16px 14px; }
+    .week-strip { margin-top:13px; }
+    .agenda-head { margin-top:15px; }
+    .footer-note { display:none; }
+    .hourly-card { padding:12px 15px 9px; display:flex; flex-direction:column; min-height:0; }
+    .hourly-controls { display:flex; align-items:center; gap:5px; }
+    .hourly-arrow { width:27px; height:25px; background:#20354b; color:#d8e9f1; border:1px solid #324962; border-radius:8px; font-size:14px; }
+    .hourly-scroll { display:flex; overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch; margin-top:9px; padding-bottom:6px; scroll-behavior:smooth; flex:1; min-height:0; }
+    .hour-cell { flex:0 0 68px; min-width:68px; text-align:center; border-right:1px solid rgba(148,166,190,.12); display:flex; flex-direction:column; justify-content:space-between; align-items:center; padding:0 3px; }
+    .hour-cell:first-child { border-left:1px solid rgba(148,166,190,.12); }
+    .hour-cell.now { background:rgba(125,219,194,.07); border-radius:8px; }
+    .hour-time { color:#c5d6e9; font-size:11px; font-weight:650; }
+    .hour-icon { font-size:22px; line-height:1.1; }
+    .hour-temp { font-size:15px; font-weight:730; }
+    .hour-pop { font-size:10px; color:#8dbffc; }
+    .hour-placeholder { color:var(--muted); font-size:12px; padding:18px 3px; }
+    .screen { height:calc(100vh - 148px); min-height:510px; }
+    .brazil-layout { display:grid; grid-template-rows:1.19fr .79fr .94fr; grid-gap:12px; }
+    .brazil-hero { display:flex; justify-content:space-between; align-items:center; padding:28px 36px; background:linear-gradient(119deg,#253a41 0%,#27473f 55%,#4a3c35 100%); }
+    .brazil-hero:before { content:'✦'; position:absolute; top:-56px; right:13%; font-size:250px; color:rgba(241,209,148,.045); }
+    .brazil-hero .section-eyebrow { color:#abd8c6; }
+    .brazil-headline { font-size:26px; font-weight:720; margin-top:9px; }
+    .brazil-caption { color:#bfd9d3; font-size:12px; margin-top:8px; }
+    .brazil-time { font-size:81px; letter-spacing:-.065em; font-weight:330; margin-top:13px; font-variant-numeric:tabular-nums; line-height:1; }
+    .brazil-date { font-size:14px; margin-top:7px; color:#c2d9d1; }
+    .brazil-outside { text-align:center; min-width:215px; position:relative; }
+    .brazil-icon { font-size:49px; }
+    .brazil-temp { font-size:66px; font-weight:380; letter-spacing:-.06em; line-height:1.15; }
+    .brazil-desc { color:#cfe9d9; font-size:14px; margin-top:5px; }
+    .brazil-feels { color:#a8c9bd; font-size:12px; margin-top:8px; }
+    .brazil-hourly { padding:20px 25px; }
+    .brazil-hourly .hourly-scroll { margin-top:15px; }
+    .brazil-hourly .hour-cell { flex-basis:85px; min-width:85px; }
+    .brazil-hourly .hour-icon { font-size:26px; }
+    .brazil-bottom { display:grid; grid-template-columns:1.55fr .45fr; grid-gap:12px; min-height:0; }
+    .brazil-daily { padding:19px 23px 13px; }
+    .brazil-daily .forecast-grid { height:calc(100% - 32px); margin-top:15px; }
+    .brazil-daylight { padding:19px; display:flex; flex-direction:column; justify-content:space-between; }
+    .brazil-sun { color:#f4e4b8; font-size:24px; }
+    .sun-line { display:flex; align-items:center; justify-content:space-between; }
+    .sun-line label { color:#b2c5d8; font-size:12px; }
+    .sun-line strong { font-size:20px; }
+    .music-layout { display:grid; grid-template-columns:.85fr 1.15fr; grid-gap:15px; }
+    .music-feature { background:linear-gradient(140deg,#24334f 0%,#273d50 51%,#213d44 100%); padding:34px; display:flex; flex-direction:column; justify-content:space-between; }
+    .music-disc { width:154px; height:154px; border-radius:50%; background:radial-gradient(circle,#82d9c3 0%,#2d6269 11%,#122038 12%,#19314a 48%,#7591a7 49%,#152a3d 52%,#0c1423 100%); box-shadow:0 17px 50px rgba(0,0,0,.24); margin:8px auto 14px; }
+    .music-bigtitle { font-size:30px; font-weight:760; line-height:1.1; }
+    .music-subtitle { color:var(--muted); line-height:1.5; font-size:13px; margin-top:12px; }
+    .music-listcard { padding:23px 26px; display:flex; flex-direction:column; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+    .music-block-label { color:#91a5be; font-size:11px; font-weight:750; text-transform:uppercase; letter-spacing:.12em; margin-bottom:10px; }
+    .station { width:100%; border:1px solid #334963; background:#1b2d43; color:#edf7fa; border-radius:12px; padding:12px 15px; display:flex; align-items:center; justify-content:space-between; text-align:left; margin-bottom:9px; }
+    .station.active { border-color:#70c5b6; background:#213e4e; }
+    .station strong { display:block; font-size:14px; }
+    .station small { display:block; color:#a6b8cb; margin-top:4px; font-size:11px; }
+    .music-split { border-top:1px solid var(--edge); margin:12px 0 17px; }
+    .music-inputline { display:flex; gap:8px; align-items:center; }
+    .music-inputline input { min-width:0; flex:1; background:#0e1b2e; color:white; border:1px solid #3b536e; border-radius:9px; font-size:12px; padding:10px; }
+    .music-inputline button,.music-filebtn { border:1px solid #547b85; background:#254a52; color:#e3fff3; padding:10px 13px; border-radius:9px; font-size:12px; white-space:nowrap; }
+    .music-filebtn { display:inline-block; cursor:pointer; }
+    .music-filebtn input { display:none; }
+    .music-help { color:#8da5ba; font-size:11px; line-height:1.55; margin-top:12px; }
+    .track-list { flex:1; min-height:40px; overflow-y:auto; -webkit-overflow-scrolling:touch; margin-top:12px; }
+    .track { display:block; padding:9px 12px; border:0; border-bottom:1px solid #263b53; background:transparent; color:#d7e7f3; font-size:12px; text-align:left; width:100%; text-overflow:ellipsis; overflow:hidden; white-space:nowrap; }
+    .track.active { color:#80e3c7; background:#1e3745; }
+    .player-dock { height:56px; display:flex; align-items:center; gap:13px; padding:6px 15px; background:#132338; border:1px solid #2b3e56; border-radius:15px; margin-top:8px; }
+    .player-art { width:37px; height:37px; line-height:37px; text-align:center; background:#284e53; border-radius:10px; color:#89f0d2; font-size:24px; }
+    .player-title { font-size:13px; font-weight:700; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+    .player-status { margin-top:2px; color:#93a9be; font-size:10px; }
+    .player-info { flex:1; min-width:0; }
+    .player-button { border:1px solid #476276; border-radius:10px; padding:8px 12px; min-width:43px; background:#284357; color:#f2fff9; font-size:15px; }
+    .player-button.primary-play { background:#80dfc4; color:#092a30; border-color:#80dfc4; }
+    .player-open { font-size:11px; min-width:48px; }
+    /* iOS 12 does not support gap on flex containers: use old Safari fallbacks. */
+    .player-dock > * { margin-right:12px; }
+    .player-dock > *:last-child { margin-right:0; }
+    .hourly-controls .hourly-arrow + .hourly-arrow { margin-left:5px; }
+    .music-inputline input { margin-right:8px; }
+    @media (max-width:850px) and (orientation:portrait) {
+      .nav-tabs { margin:0 7px; }.nav-tab { padding:8px 10px; }.top-status { display:none; }
+      .dashboard,.screen { height:auto; min-height:0; }
+      .left { display:block; } .left .card { margin-bottom:12px; }
+      .hourly-card { min-height:135px; } .brazil-layout,.music-layout { display:block; }
+      .brazil-hero,.brazil-hourly,.brazil-bottom,.music-feature,.music-listcard { margin-bottom:12px; }
+      .brazil-hero { min-height:300px; } .brazil-bottom { display:block; }
+      .brazil-daily { min-height:230px; margin-bottom:12px; } .brazil-daylight { min-height:150px; }
+      .music-feature { min-height:300px; } .music-listcard { min-height:380px; } .player-dock { position:sticky; bottom:6px; }
+    }
+    @media (max-width:740px) and (orientation:landscape) {
+      .brand-sub { display:none; } .brand-icon { display:none; } .nav-tabs { margin:0 7px; }
+      .nav-tab { padding:9px; }.top-status { display:none; }
+      .brazil-time { font-size:57px; } .brazil-headline { font-size:18px; } .brazil-temp { font-size:46px; }
+      .brazil-hero { padding:18px; }.hour-cell { flex-basis:59px; min-width:59px; }
+    }
+    @media (max-height:700px) and (orientation:landscape) {
+      .dashboard,.screen { height:calc(100vh - 126px); min-height:410px; }
+      .app { padding:5px 13px 5px; }.topbar { height:41px; margin-bottom:7px; }
+      .player-dock { height:49px; margin-top:6px; }.left { grid-gap:7px; }
+      .brazil-hero { padding:14px 25px; }.brazil-time { font-size:57px; }
+      .brazil-temp { font-size:46px; }.music-feature { padding:22px; }
+    }
+  
+
+    /* V3: Brazil is a glanceable tile on Home; forecasts still swipe without showing a scrollbar. */
+    .hourly-scroll { scrollbar-width:none; -ms-overflow-style:none; }
+    .hourly-scroll::-webkit-scrollbar { display:none; width:0; height:0; background:transparent; }
+    .home-details { grid-template-columns: 1fr 1.30fr .86fr; grid-gap:9px; }
+    .home-details .detail-card { padding:11px 10px; }
+    .home-details .detail-value { font-size:19px; }
+    .home-details .detail-top { font-size:9px; letter-spacing:.05em; white-space:nowrap; }
+    .home-details .sun-times .divider-v { margin:0 4px; }
+    .home-details .sensor-soon { font-size:13px; margin-top:4px; }
+    .home-details .detail-foot { font-size:9px; }
+    .brazil-mini { padding:10px 12px 7px; background:linear-gradient(114deg,#254136 0%,#173b46 100%); }
+    .brazil-mini-heading { display:flex; align-items:center; justify-content:space-between; color:#caeadb; font-size:11px; font-weight:720; white-space:nowrap; }
+    .brazil-mini-flag { color:#8eb5af; font-size:9px; font-weight:600; padding-left:5px; }
+    .brazil-mini-line { display:flex; justify-content:space-between; align-items:baseline; margin-top:5px; }
+    .brazil-mini-time { font-size:27px; font-weight:420; font-variant-numeric:tabular-nums; letter-spacing:-.045em; }
+    .brazil-mini-weather { white-space:nowrap; font-size:19px; font-weight:650; }
+    .brazil-mini-desc { font-size:10px; color:#b3d6ca; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px; }
+    .station-filters { display:flex; flex-wrap:wrap; margin:5px 0 9px; }
+    .filter-chip { border:1px solid #35536b; background:#1c2f47; color:#bfd0e0; border-radius:20px; padding:6px 10px; font-size:11px; margin:0 5px 6px 0; }
+    .filter-chip.active { background:#397067; border-color:#73c9b8; color:#f1fff9; }
+    .station-search { border:1px solid #345069; background:#102034; color:white; width:100%; padding:9px 11px; font-size:12px; border-radius:10px; margin-bottom:9px; }
+    .station-directory { flex:1 0 auto; min-height:175px; }
+    .station-row { display:flex; align-items:stretch; margin-bottom:7px; }
+    .station { flex:1; min-width:0; margin-bottom:0; padding:9px 11px; border-top-right-radius:0; border-bottom-right-radius:0; }
+    .station strong { font-size:12px; }
+    .station small { font-size:10px; margin-top:3px; }
+    .favorite-station { width:37px; flex-shrink:0; border:1px solid #334963; border-left:0; border-radius:0 10px 10px 0; background:#1b2d43; color:#91a9c1; font-size:20px; }
+    .favorite-station.is-favorite { color:#f9c980; }
+    .music-listcard { padding:16px 17px; }
+    #station-count { color:#72c8b5; font-weight:500; font-size:10px; }
+    .station-empty { padding:20px; color:#a3b5c9; font-size:12px; text-align:center; }
+    @media (max-width:850px) and (orientation:portrait) {
+      .home-details { grid-template-columns:1fr 1.25fr; }
+      .home-details .sensor-tile { grid-column:1 / 3; }
+      .music-listcard { min-height:450px; }
+    }
+    @media (max-height:700px) and (orientation:landscape) {
+      .brazil-mini { padding:7px 10px; }
+      .brazil-mini-time { font-size:23px; }
+      .brazil-mini-weather { font-size:16px; }
+      .brazil-mini-heading { font-size:10px; }
+      .home-details .detail-value { font-size:16px; }
+      .home-details .detail-foot,.brazil-mini-desc { font-size:9px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon">⌂</div>
+        <div><div class="brand-name">HOMEBOARD</div><div class="brand-sub">A little more home</div></div>
+      </div>
+      <nav class="nav-tabs" aria-label="Dashboard sections">
+        <button class="nav-tab active" data-view="home">⌂ Home</button>
+        <button class="nav-tab" data-view="music">♫ Music</button>
+      </nav>
+      <div class="header-right">
+        <div class="top-status"><span class="status-dot" id="status-dot"></span><span id="connection-status">Starting up</span></div>
+        <button class="icon-button" id="settings-button" aria-label="Open settings" title="Settings">⚙</button>
+      </div>
+    </header>
+
+    <div class="view active" id="view-home"><main class="dashboard">
+      <div class="left">
+        <section class="card hero">
+          <div class="hero-header">
+            <div><div class="section-eyebrow">Your day at a glance</div><div id="greeting">Welcome home</div></div>
+            <span class="hero-location" id="location-name">⌖ Aarhus, Denmark</span>
+          </div>
+          <div class="hero-bottom">
+            <div><div class="time" id="clock">--:--</div><div class="today" id="date">Loading date…</div></div>
+            <div class="outside"><div class="outside-icon" id="current-icon">◌</div><div class="outside-temp" id="current-temp">--°</div><div class="outside-label">Outside now</div><div class="outside-desc" id="current-desc">Checking weather</div></div>
+          </div>
+        </section>
+
+        <section class="card forecast">
+          <div class="card-heading"><div class="card-title">The next five days</div><div class="card-note" id="weather-update">Updating weather…</div></div>
+          <div class="forecast-grid" id="forecast-grid">
+            <div class="forecast-day"><span class="forecast-day-name">—</span><span class="forecast-icon">·</span><span class="forecast-temps">--°</span><span class="forecast-rain">—</span></div>
+          </div>
+        </section>
+
+        <section class="card hourly-card">
+          <div class="card-heading"><div class="card-title">Next 24 hours <span class="card-note">· Aarhus</span></div><div class="hourly-controls"><button class="hourly-arrow" data-scroll="hourly-aarhus" data-dir="-1" aria-label="Earlier hours">‹</button><button class="hourly-arrow" data-scroll="hourly-aarhus" data-dir="1" aria-label="Later hours">›</button></div></div>
+          <div class="hourly-scroll" id="hourly-aarhus"><div class="hour-placeholder">Loading hourly weather…</div></div>
+        </section>
+        <div class="details home-details">
+          <section class="card detail-card">
+            <div class="detail-top">☀ Daylight · Aarhus</div>
+            <div class="sun-times">
+              <div><div class="detail-value" id="sunrise">--:--</div><div class="detail-foot">Sunrise</div></div>
+              <div class="divider-v"></div>
+              <div><div class="detail-value" id="sunset">--:--</div><div class="detail-foot">Sunset</div></div>
+            </div>
+          </section>
+          <section class="card brazil-mini" aria-label="Time and weather in Faxinal do Soturno, Brazil">
+            <div class="brazil-mini-heading"><span>🇧🇷 Faxinal do Soturno</span><span class="brazil-mini-flag">RS</span></div>
+            <div class="brazil-mini-line"><span class="brazil-mini-time" id="brazil-clock">--:--</span><span class="brazil-mini-weather"><span id="brazil-icon">◌</span> <span id="brazil-temp">--°</span></span></div>
+            <div class="brazil-mini-desc" id="brazil-desc">Checking weather…</div>
+          </section>
+          <section class="card detail-card sensor-tile">
+            <div class="detail-top">⌂ Inside</div>
+            <div class="sensor-soon">Coming soon</div>
+            <div class="detail-foot">Xiaomi sensor · Phase 2</div>
+          </section>
+        </div>
+      </div>
+
+      <div class="right">
+        <section class="card calendar">
+          <div class="calendar-head">
+            <div class="card-title">Calendar</div>
+            <div class="calendar-actions"><button class="small-button" id="add-button">+ Add event</button></div>
+          </div>
+          <div class="calendar-sub" id="calendar-source">iCloud calendar not connected yet</div>
+          <div class="week-strip" id="week-strip"></div>
+          <div class="agenda-head"><strong>COMING UP</strong><span id="agenda-range">Next 14 days</span></div>
+          <div class="agenda-list" id="agenda-list"></div>
+          <div class="calendar-footer"><span id="calendar-foot">No calendar imported</span><button class="calendar-link" id="connect-button">Connect iCloud →</button></div>
+        </section>
+      </div>
+    </main></div>
+
+    <div class="view" id="view-music"><main class="screen music-layout">
+      <section class="card music-feature">
+        <div><div class="section-eyebrow">♫ Homeboard audio</div><div class="music-bigtitle" style="margin-top:16px">Music for your space.</div><div class="music-subtitle">Rock, blues, jazz, Brazilian music and more. Choose a genre or save favourite radio stations for quick access.</div></div>
+        <div class="music-disc" aria-hidden="true"></div>
+        <div class="music-subtitle">Tap any station to listen. Safari requires you to start audio manually; it will never autoplay when opening the dashboard.</div>
+      </section>
+      <section class="card music-listcard">
+        <div class="music-block-label">Internet radio · find your sound <span id="station-count"></span></div>
+        <div class="station-filters" id="station-filters" aria-label="Filter radio stations">
+          <button class="filter-chip active" data-genre="All">All</button>
+          <button class="filter-chip" data-genre="Rock">Rock &amp; metal</button>
+          <button class="filter-chip" data-genre="Blues">Blues &amp; soul</button>
+          <button class="filter-chip" data-genre="Jazz">Jazz</button>
+          <button class="filter-chip" data-genre="Brazil">Brazilian</button>
+          <button class="filter-chip" data-genre="Chill">Chill &amp; more</button>
+          <button class="filter-chip" data-genre="Favorites">★ Favorites</button>
+        </div>
+        <input class="station-search" id="station-search" type="search" placeholder="Search stations or music styles…" aria-label="Search radio stations">
+        <div class="station-directory" id="station-directory"><div class="music-help">Loading radio stations…</div></div>
+        <div class="music-split"></div>
+        <div class="music-block-label">Or your own audio</div>
+        <div><label class="music-filebtn">＋ Choose music files<input type="file" id="music-files" accept="audio/*,.mp3,.m4a,.aac,.wav" multiple></label></div>
+        <div class="track-list" id="music-tracks"><div class="music-help">Select MP3 or M4A files from the iPad Files app. Your files are not uploaded anywhere. Choose them again after reloading the page.</div></div>
+        <div class="music-split"></div>
+        <div class="music-block-label">Custom direct stream URL</div>
+        <div class="music-inputline"><input type="url" id="radio-url" placeholder="https://station.example/live.mp3" aria-label="Internet radio URL"><button id="play-custom">Play URL</button></div>
+        <div class="music-help">Use a direct HTTPS MP3/AAC stream, not a Spotify or Apple Music page link. Playback needs an internet connection and a tap to start.</div>
+      </section>
+    </main></div>
+
+    <div class="player-dock">
+      <div class="player-art">♫</div>
+      <div class="player-info"><div class="player-title" id="player-title">Music is ready</div><div class="player-status" id="player-status">Tap Play to start Radio Paradise</div></div>
+      <button class="player-button" id="player-prev" aria-label="Previous track" title="Previous track">‹‹</button>
+      <button class="player-button primary-play" id="player-toggle" aria-label="Play or pause">▶</button>
+      <button class="player-button" id="player-next" aria-label="Next track" title="Next track">››</button>
+      <button class="player-button player-open" id="player-open">Music ↗</button>
+      <audio id="music-audio" preload="none"></audio>
+    </div>
+    <div class="footer-note">Weather: Open-Meteo · Display optimized for iPad Air 1 · Tap ⚙ to customize</div>
+  </div>
+
+  <div class="overlay" id="overlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-head"><h2 id="modal-title">Dashboard settings</h2><button class="close-button" id="close-modal" aria-label="Close">×</button></div>
+      <div class="tabs">
+        <button class="tab active" data-tab="calendar">iCloud calendar</button>
+        <button class="tab" data-tab="events">Add an event</button>
+        <button class="tab" data-tab="place">Weather location</button>
+      </div>
+      <div class="tab-page active" id="tab-calendar">
+        <p class="modal-copy">Your calendar is private by default. You can import an .ics export to display appointments locally, without uploading them to any service. Imports are snapshots, not automatic sync.</p>
+        <label class="file-label">📆 Import a calendar (.ics)<input type="file" id="ics-file" accept=".ics,text/calendar"></label>
+        <div class="hint">Events are processed on this device and saved in this browser. For iCloud on a Mac: Calendar → File → Export → Export. You can also use a downloaded .ics calendar file.</div>
+        <div style="height:1px;background:#394e66;margin:19px 0"></div>
+        <div class="card-title" style="font-size:15px">Optional: automatic iCloud sync</div>
+        <p class="modal-copy" style="margin-top:9px">To refresh iCloud automatically, deploy the included protected Cloudflare Worker bridge, then enter its URL and access token below. This is optional and requires making a calendar readable via a secret public link in iCloud. See README.md for privacy details.</p>
+        <div class="field"><label for="worker-url">Calendar bridge URL</label><input id="worker-url" type="url" placeholder="https://my-home-calendar.example.workers.dev"></div>
+        <div class="field"><label for="worker-token">Access token for your bridge</label><input id="worker-token" type="password" placeholder="Your long random token" autocomplete="off"></div>
+        <div class="action-row"><button class="primary" id="save-calendar">Save &amp; sync</button><button class="secondary" id="clear-calendar">Remove imported calendar</button></div>
+        <div class="hint">Do not paste your Apple ID password here. The token is stored only in this browser, but anyone with physical access to this iPad may be able to retrieve it.</div>
+      </div>
+      <div class="tab-page" id="tab-events">
+        <p class="modal-copy">Add an appointment directly on this iPad. Manually added events remain separate from any imported iCloud events.</p>
+        <div class="field"><label for="event-title">Event name</label><input id="event-title" type="text" maxlength="100" placeholder="e.g. Dentist appointment"></div>
+        <div class="field-row"><div class="field"><label for="event-day">Date</label><input id="event-day" type="date"></div><div class="field"><label for="event-time">Time</label><input id="event-time" type="time" value="09:00"></div></div>
+        <div class="action-row"><button class="primary" id="save-event">Add to dashboard</button><button class="secondary" id="clear-events">Clear manually added events</button></div>
+      </div>
+      <div class="tab-page" id="tab-place">
+        <p class="modal-copy">Aarhus is the default. You can change the place name and coordinates if you want weather closer to your home.</p>
+        <div class="field"><label for="place-name">Location name</label><input id="place-name" type="text" placeholder="Aarhus"></div>
+        <div class="field-row"><div class="field"><label for="place-lat">Latitude</label><input id="place-lat" type="number" step="0.0001" min="-90" max="90"></div><div class="field"><label for="place-lon">Longitude</label><input id="place-lon" type="number" step="0.0001" min="-180" max="180"></div></div>
+        <div class="action-row"><button class="primary" id="save-place">Save location</button><button class="secondary" id="reset-place">Reset to Aarhus</button></div>
+        <div class="hint">For example, you can use coordinates copied from a map. Weather updates every 15 minutes when the dashboard is open.</div>
+      </div>
+      <div class="message" id="modal-message" role="status"></div>
+    </div>
+  </div>
+  <div class="preview-bar" id="preview-bar">PREVIEW — SAMPLE WEATHER &amp; EVENTS</div>
+  <script>
+  (function () {
+    'use strict';
+    // Vanilla JavaScript only: deliberately compatible with iOS 12 Safari.
+    var defaultSettings = {name:'Aarhus',lat:56.1629,lon:10.2039,endpoint:'',token:''};
+    var settings = readStore('homeboard-settings', defaultSettings);
+    var manual = readStore('homeboard-manual-events', []);
+    var importedText = readStore('homeboard-imported-ics', '');
+    var imported = [];
+    var remote = [];
+    var isPreview = /(?:\?|&)preview=1(?:&|$)/.test(location.search);
+    var weatherTimeout = null;
+    var brazilPlace = {name:'Faxinal do Soturno',lat:-29.57717,lon:-53.4458,tz:'America/Sao_Paulo'};
+    var radioDefault = {url:'https://stream-uk1.radioparadise.com/mp3-128',name:'Radio Paradise'};
+    var audioTracks = [], currentTrack = -1, audioKind = '', audioSource = '', audioLabel = '';
+
+    var weekdays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    var monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    function el(id) { return document.getElementById(id); }
+    function readStore(key, fallback) { try { var s=localStorage.getItem(key); return s?JSON.parse(s):fallback; } catch(e) { return fallback; } }
+    function saveStore(key, val) { try { localStorage.setItem(key,JSON.stringify(val)); return true; } catch(e) { return false; } }
+    function two(n) { return n<10?'0'+n:''+n; }
+    function localDate(d) { return d.getFullYear()+'-'+two(d.getMonth()+1)+'-'+two(d.getDate()); }
+    function shortTime(d) { return two(d.getHours())+':'+two(d.getMinutes()); }
+    function timeFromISO(s) { return s && s.indexOf('T')!==-1 ? s.split('T')[1].slice(0,5) : '--:--'; }
+    function diffDays(d1,d2) { return Math.round((Date.UTC(d1.getFullYear(),d1.getMonth(),d1.getDate())-Date.UTC(d2.getFullYear(),d2.getMonth(),d2.getDate()))/86400000); }
+    function cleanText(s) { return String(s||'').replace(/\\n/gi,' ').replace(/\\,/g,',').replace(/\\;/g,';').replace(/\\\\/g,'\\'); }
+    function makeText(parent, tag, klass, content) { var n=document.createElement(tag); if(klass)n.className=klass; n.textContent=content; parent.appendChild(n); return n; }
+    function setText(id,text) { el(id).textContent=text; }
+    function updateClock() {
+      var now=new Date(), h=now.getHours();
+      setText('clock',two(h)+':'+two(now.getMinutes()));
+      setText('date',now.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'}));
+      setText('greeting',h<11?'Good morning':h<17?'Good afternoon':h<22?'Good evening':'A quiet night at home');
+      drawWeek(now);
+      try {
+        setText('brazil-clock',new Intl.DateTimeFormat('en-GB',{timeZone:brazilPlace.tz,hour:'2-digit',minute:'2-digit',hour12:false}).format(now));
+      } catch(e) {
+        var br=new Date(now.getTime()-3*3600000);
+        setText('brazil-clock',two(br.getUTCHours())+':'+two(br.getUTCMinutes()));
+      }
+    }
+    function drawWeek(now) {
+      var box=el('week-strip'); var today=localDate(now);
+      if(box.getAttribute('data-day')===today)return;
+      box.setAttribute('data-day',today); box.innerHTML='';
+      var monday=new Date(now.getFullYear(),now.getMonth(),now.getDate() - ((now.getDay()+6)%7));
+      for(var i=0;i<7;i++) {
+        var d=new Date(monday.getFullYear(),monday.getMonth(),monday.getDate()+i);
+        var cell=document.createElement('div'); cell.className='week-day'+(localDate(d)===today?' active':'');
+        makeText(cell,'span','week-letter',weekdays[d.getDay()].slice(0,1));
+        makeText(cell,'span','week-number',''+d.getDate()); box.appendChild(cell);
+      }
+    }
+    function weatherInfo(code,isDay) {
+      if(code===0)return {icon:isDay===0?'🌙':'☀️',name:'Clear sky'};
+      if(code===1||code===2)return {icon:isDay===0?'☁️':'🌤️',name:'Partly cloudy'};
+      if(code===3)return {icon:'☁️',name:'Overcast'};
+      if(code===45||code===48)return {icon:'🌫️',name:'Foggy'};
+      if(code>=51&&code<=57)return {icon:'🌦️',name:'Drizzle'};
+      if(code>=61&&code<=67)return {icon:'🌧️',name:'Rain'};
+      if(code>=71&&code<=77)return {icon:'🌨️',name:'Snow'};
+      if(code>=80&&code<=82)return {icon:'🌦️',name:'Showers'};
+      if(code>=85&&code<=86)return {icon:'❄️',name:'Snow showers'};
+      if(code>=95)return {icon:'⛈️',name:'Thunderstorms'};
+      return {icon:'☁️',name:'Variable skies'};
+    }
+    function renderDaily(daily,targetId) {
+      var forecast=el(targetId); forecast.innerHTML='';
+      for(var i=0;i<5 && i<daily.time.length;i++) {
+        var d=new Date(daily.time[i]+'T12:00:00');
+        var card=document.createElement('div'); card.className='forecast-day';
+        makeText(card,'span','forecast-day-name',i===0?'Today':weekdays[d.getDay()]);
+        makeText(card,'span','forecast-icon',weatherInfo(daily.weather_code[i],1).icon);
+        var temps=document.createElement('div'); temps.className='forecast-temps';
+        makeText(temps,'span','',Math.round(daily.temperature_2m_max[i])+'° ');
+        makeText(temps,'span','forecast-low',Math.round(daily.temperature_2m_min[i])+'°');card.appendChild(temps);
+        var pop=daily.precipitation_probability_max?daily.precipitation_probability_max[i]:null;
+        makeText(card,'span','forecast-rain',pop===null||typeof pop==='undefined'?'':'💧 '+pop+'%');forecast.appendChild(card);
+      }
+    }
+    function renderHourly(data,targetId) {
+      var box=el(targetId), h=data.hourly;
+      if(!h || !h.time || !h.temperature_2m){box.textContent='Hourly data unavailable';return;}
+      box.innerHTML='';
+      var currentHour=(data.current&&data.current.time||'').slice(0,13),start=0;
+      for(var i=0;i<h.time.length;i++){if(h.time[i].slice(0,13)===currentHour){start=i;break;}}
+      var end=Math.min(h.time.length,start+24);
+      for(var n=start;n<end;n++) {
+        var cell=document.createElement('div');cell.className='hour-cell'+(n===start?' now':'');
+        var hour=h.time[n].slice(11,16);
+        makeText(cell,'div','hour-time',n===start?'Now':hour);
+        makeText(cell,'div','hour-icon',weatherInfo(h.weather_code?h.weather_code[n]:3,h.is_day?h.is_day[n]:1).icon);
+        makeText(cell,'div','hour-temp',Math.round(h.temperature_2m[n])+'°');
+        var pop=h.precipitation_probability?h.precipitation_probability[n]:null;
+        makeText(cell,'div','hour-pop',pop===null||typeof pop==='undefined'?'':('💧 '+pop+'%'));
+        box.appendChild(cell);
+      }
+      box.scrollLeft=0;
+    }
+    function updateWeather(data,cached) {
+      if(!data || !data.current || !data.daily)throw Error('Incomplete weather response');
+      var cur=data.current, daily=data.daily;
+      var desc=weatherInfo(cur.weather_code,cur.is_day);
+      setText('current-icon',desc.icon);
+      setText('current-temp',Math.round(cur.temperature_2m)+'°');
+      setText('current-desc',desc.name);
+      setText('sunrise',timeFromISO(daily.sunrise[0])); setText('sunset',timeFromISO(daily.sunset[0]));
+      renderDaily(daily,'forecast-grid');
+      renderHourly(data,'hourly-aarhus');
+      setText('weather-update',cached?'Last saved forecast':'Updated '+shortTime(new Date()));
+      setText('connection-status',cached?'Saved forecast':'Weather live');
+      el('status-dot').style.background=cached?'#f9ca89':'#7ddbc2';
+    }
+    function weatherUrl(lat,lon,tz) {
+      return 'https://api.open-meteo.com/v1/forecast?latitude='+encodeURIComponent(lat)+'&longitude='+encodeURIComponent(lon)
+        +'&current=temperature_2m,weather_code,is_day,apparent_temperature,relative_humidity_2m'
+        +'&hourly=temperature_2m,precipitation_probability,weather_code,is_day'
+        +'&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_probability_max'
+        +'&timezone='+encodeURIComponent(tz)+'&forecast_days=5';
+    }
+    function updateBrazilWeather(data,cached) {
+      if(!data || !data.current)throw Error('Incomplete Brazil weather response');
+      var current=data.current,desc=weatherInfo(current.weather_code,current.is_day);
+      setText('brazil-icon',desc.icon);
+      setText('brazil-temp',Math.round(current.temperature_2m)+'°');
+      setText('brazil-desc',desc.name+(cached?' · Saved':'') );
+    }
+    function brazilWeatherUrl() {
+      return 'https://api.open-meteo.com/v1/forecast?latitude='+brazilPlace.lat+'&longitude='+brazilPlace.lon
+        +'&current=temperature_2m,weather_code,is_day&timezone='+encodeURIComponent(brazilPlace.tz);
+    }
+    function loadBrazilWeather() {
+      if(isPreview)return;
+      var cached=readStore('homeboard-brazil-weather-cache',null);
+      if(cached)try{updateBrazilWeather(cached.data,true);}catch(e){}
+      fetch(brazilWeatherUrl(),{cache:'no-cache'})
+      .then(function(resp){if(!resp.ok)throw Error('Brazil weather returned '+resp.status);return resp.json();})
+      .then(function(data){updateBrazilWeather(data,false);saveStore('homeboard-brazil-weather-cache',{data:data,ts:Date.now()});})
+      .catch(function(){if(!cached)setText('brazil-desc','Weather unavailable');});
+    }
+    function loadWeather() {
+      if(isPreview) { previewWeather(); return; }
+      var s=settings;
+      var url=weatherUrl(s.lat,s.lon,'Europe/Copenhagen');
+      var cache=readStore('homeboard-weather-cache',null);
+      if(cache && cache.place===s.lat+','+s.lon) { try {updateWeather(cache.data,true);}catch(e){} }
+      // The fetch is deliberately lightweight; no external JavaScript dependencies.
+      fetch(url,{cache:'no-cache'}).then(function(resp){if(!resp.ok)throw Error('Weather service returned '+resp.status);return resp.json();})
+      .then(function(data){updateWeather(data,false);saveStore('homeboard-weather-cache',{place:s.lat+','+s.lon,data:data,ts:Date.now()});})
+      .catch(function(err){setText('weather-update','Weather unavailable · retrying');setText('connection-status','Offline / retrying');el('status-dot').style.background='#f9ca89'; if(!cache){setText('current-desc','No weather connection');} });
+    }
+    function parseIcsDate(s,property) {
+      if(!s)return null; s=s.trim();
+      var a=s.match(/^(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})?(Z)?)?/);
+      if(!a)return null;
+      var y=+a[1],mo=+a[2]-1,da=+a[3],hh=+(a[4]||0),mm=+(a[5]||0),ss=+(a[6]||0);
+      // UTC events are translated to the iPad's local timezone; TZID values use the iPad timezone.
+      // Set the iPad timezone to Europe/Copenhagen for Danish local event exports.
+      return a[7]?new Date(Date.UTC(y,mo,da,hh,mm,ss)):new Date(y,mo,da,hh,mm,ss);
+    }
+    function parseICS(input) {
+      if(typeof input!=='string' || !input)return [];
+      var lines=input.replace(/\r\n/g,'\n').replace(/\r/g,'\n').replace(/\n[ \t]/g,'').split('\n');
+      var events=[], cur=null;
+      for(var i=0;i<lines.length;i++) {
+        var line=lines[i];
+        if(line==='BEGIN:VEVENT') {cur={exdates:[]};continue;}
+        if(line==='END:VEVENT') {if(cur && cur.start && cur.summary && cur.status!=='CANCELLED')events.push(cur);cur=null;continue;}
+        if(!cur)continue;
+        var pos=line.indexOf(':');if(pos<0)continue;
+        var tag=line.slice(0,pos).split(';')[0].toUpperCase(), value=line.slice(pos+1), field=line.slice(0,pos);
+        if(tag==='SUMMARY')cur.summary=cleanText(value);
+        else if(tag==='DTSTART'){cur.start=parseIcsDate(value,field);cur.allDay=field.indexOf('VALUE=DATE')!==-1||value.length===8;}
+        else if(tag==='DTEND')cur.end=parseIcsDate(value,field);
+        else if(tag==='RRULE')cur.rule=value;
+        else if(tag==='UID')cur.uid=value;
+        else if(tag==='STATUS')cur.status=value;
+        else if(tag==='RECURRENCE-ID')cur.recurrenceId=parseIcsDate(value,field);
+        else if(tag==='EXDATE') {var vals=value.split(',');for(var j=0;j<vals.length;j++) {var ex=parseIcsDate(vals[j],field);if(ex)cur.exdates.push(ex);} }
+      }
+      return events;
+    }
+    function ruleParts(s) {var o={},a=(s||'').split(';');for(var i=0;i<a.length;i++){var p=a[i].split('=');if(p.length===2)o[p[0]]=p[1];}return o;}
+    function isRepeatDate(d,start,r) {
+      var interval=Math.max(1,parseInt(r.INTERVAL||'1',10)||1), freq=r.FREQ;
+      var dayDelta=diffDays(d,start); if(dayDelta<0)return false;
+      var monthDelta=(d.getFullYear()-start.getFullYear())*12+d.getMonth()-start.getMonth();
+      var byDay=r.BYDAY?r.BYDAY.split(','):null;
+      if(byDay){var dayCode=['SU','MO','TU','WE','TH','FR','SA'][d.getDay()];var found=false;
+        for(var i=0;i<byDay.length;i++){ if(byDay[i]===dayCode||byDay[i].slice(-2)===dayCode)found=true;} if(!found)return false; }
+      if(r.BYMONTH && r.BYMONTH.split(',').indexOf(''+(d.getMonth()+1))===-1)return false;
+      if(r.BYMONTHDAY && r.BYMONTHDAY.split(',').indexOf(''+d.getDate())===-1)return false;
+      if(freq==='DAILY')return dayDelta%interval===0;
+      if(freq==='WEEKLY'){
+        var startMon=new Date(start.getFullYear(),start.getMonth(),start.getDate()-((start.getDay()+6)%7));
+        var dayMon=new Date(d.getFullYear(),d.getMonth(),d.getDate()-((d.getDay()+6)%7));
+        return Math.round(diffDays(dayMon,startMon)/7)%interval===0 && (byDay || d.getDay()===start.getDay());
+      }
+      if(freq==='MONTHLY')return monthDelta%interval===0 && (byDay||r.BYMONTHDAY||d.getDate()===start.getDate());
+      if(freq==='YEARLY')return (d.getFullYear()-start.getFullYear())%interval===0 && (r.BYMONTH||d.getMonth()===start.getMonth()) && (byDay||r.BYMONTHDAY||d.getDate()===start.getDate());
+      return false;
+    }
+    function expandEvents(source,startWindow,endWindow) {
+      var output=[];
+      for(var i=0;i<source.length;i++) {
+        var e=source[i]; if(!e.start)continue;
+        var duration=e.end?Math.max(0,e.end.getTime()-e.start.getTime()):3600000;
+        if(!e.rule) {
+          if((e.start<endWindow && (e.start>=startWindow || (e.end && e.end>startWindow))))output.push({summary:e.summary,start:e.start,end:e.end,allDay:e.allDay});
+          continue;
+        }
+        var r=ruleParts(e.rule); var until=r.UNTIL?parseIcsDate(r.UNTIL):null;
+        if(until && r.UNTIL.length===8)until.setHours(23,59,59,999);
+        var from=new Date(Math.max(e.start.getTime(),startWindow.getTime()-duration));
+        var midnight=new Date(from.getFullYear(),from.getMonth(),from.getDate());
+        for(var j=0;j<48;j++) {
+          var d=new Date(midnight.getFullYear(),midnight.getMonth(),midnight.getDate()+j,e.start.getHours(),e.start.getMinutes(),e.start.getSeconds());
+          if(d>=endWindow)break;
+          if(d<e.start || (until && d>until) || !isRepeatDate(d,e.start,r))continue;
+          var cancelled=false;
+          for(var x=0;x<e.exdates.length;x++) {if(localDate(e.exdates[x])===localDate(d)) {cancelled=true;break;} }
+          if(cancelled)continue;
+          // Handle a COUNT for the common single-day recurrence forms.
+          if(r.COUNT && !r.BYDAY) {
+            var n=+r.COUNT, countIndex=0;
+            if(r.FREQ==='DAILY')countIndex=diffDays(d,e.start)/(parseInt(r.INTERVAL||'1',10)||1)+1;
+            if(r.FREQ==='WEEKLY')countIndex=diffDays(d,e.start)/(7*(parseInt(r.INTERVAL||'1',10)||1))+1;
+            if(r.FREQ==='MONTHLY')countIndex=((d.getFullYear()-e.start.getFullYear())*12+d.getMonth()-e.start.getMonth())/(parseInt(r.INTERVAL||'1',10)||1)+1;
+            if(r.FREQ==='YEARLY')countIndex=(d.getFullYear()-e.start.getFullYear())/(parseInt(r.INTERVAL||'1',10)||1)+1;
+            if(countIndex>n)continue;
+          }
+          output.push({summary:e.summary,start:d,end:new Date(d.getTime()+duration),allDay:e.allDay});
+        }
+      }
+      return output;
+    }
+    function displayCalendar() {
+      var now=new Date(), begin=new Date(now.getFullYear(),now.getMonth(),now.getDate()), end=new Date(begin.getFullYear(),begin.getMonth(),begin.getDate()+15);
+      var list=[];
+      var parsed=imported.concat(remote);
+      list=list.concat(expandEvents(parsed,begin,end));
+      for(var i=0;i<manual.length;i++) {
+        var m=manual[i], date=new Date(m.date+'T'+(m.time||'09:00')+':00');
+        if(!isNaN(date.getTime()) && date>=begin && date<end)list.push({summary:m.title,start:date,allDay:false});
+      }
+      list.sort(function(a,b){return a.start-b.start;});
+      var dedup={}, unique=[];
+      for(var k=0;k<list.length;k++){var key=localDate(list[k].start)+shortTime(list[k].start)+list[k].summary;
+        if(!dedup[key]){dedup[key]=true;unique.push(list[k]);}}
+      var target=el('agenda-list');target.innerHTML='';
+      if(!unique.length) {
+        var empty=document.createElement('div');empty.className='empty-state';
+        makeText(empty,'div','empty-symbol','🗓️');
+        makeText(empty,'strong','',parsed.length||manual.length?'Nothing coming up':'Bring your calendar home');
+        makeText(empty,'p','',parsed.length||manual.length?'No appointments over the next 14 days.':'Import an iCloud calendar export or add an event to start using this space.');
+        var b=document.createElement('button');b.className='small-button';b.textContent='Set up calendar';b.onclick=function(){openModal('calendar');};empty.appendChild(b);target.appendChild(empty);
+      }
+      for(var z=0;z<unique.length && z<22;z++){
+        var e=unique[z], d=e.start;
+        var item=document.createElement('div');item.className='agenda-item';
+        var dt=document.createElement('div');dt.className='agenda-date';makeText(dt,'div','number',''+d.getDate());makeText(dt,'div','weekday',weekdays[d.getDay()]);item.appendChild(dt);
+        var line=document.createElement('div');line.className='agenda-line';if(z%4===1)line.style.background='#83bafb';if(z%4===2)line.style.background='#f9ca89';item.appendChild(line);
+        var content=document.createElement('div');content.className='agenda-content';makeText(content,'div','agenda-event-name',e.summary);makeText(content,'div','agenda-time',(e.allDay?'All day':shortTime(d))+' · '+(localDate(d)===localDate(now)?'Today':monthNames[d.getMonth()]+' '+d.getDate()));item.appendChild(content);target.appendChild(item);
+      }
+      var origin=settings.endpoint && remote.length?'Auto-sync iCloud':(imported.length?'Imported calendar':(manual.length?'Manual events':'iCloud calendar not connected yet'));
+      setText('calendar-source',origin);
+      setText('calendar-foot',unique.length+' upcoming · '+(settings.endpoint?'Sync set up':(imported.length?'Local import':'Local only')));
+      setText('agenda-range','Next 14 days');
+      setText('connect-button',settings.endpoint?'Calendar settings →':'Connect iCloud →');
+    }
+    function refreshCalendar() {
+      if(!settings.endpoint || isPreview)return;
+      // Optional self-hosted protected Worker, not Apple credentials.
+      fetch(settings.endpoint,{headers:{'X-Dashboard-Token':settings.token},cache:'no-cache'})
+        .then(function(r){if(!r.ok)throw Error('Calendar sync: HTTP '+r.status);return r.text();})
+        .then(function(ics){if(ics.length>1250000)throw Error('Calendar feed is too large');remote=parseICS(ics);displayCalendar();setText('calendar-source','iCloud · synced '+shortTime(new Date()));})
+        .catch(function(err){setText('calendar-source','iCloud sync failed · check settings');});
+    }
+    function showMessage(s,error){var e=el('modal-message');e.textContent=s;e.className='message'+(error?' error':'');e.style.display='block';}
+    function openModal(tab) {el('overlay').className='overlay open';el('overlay').setAttribute('aria-hidden','false');selectTab(tab||'calendar');el('modal-message').style.display='none';}
+    function closeModal(){el('overlay').className='overlay';el('overlay').setAttribute('aria-hidden','true');}
+    function selectTab(tab) {
+      var t=document.querySelectorAll('.tab'),p=document.querySelectorAll('.tab-page');
+      for(var i=0;i<t.length;i++)t[i].className='tab'+(t[i].getAttribute('data-tab')===tab?' active':'');
+      for(var j=0;j<p.length;j++)p[j].className='tab-page'+(p[j].id==='tab-'+tab?' active':'');
+    }
+    function applySettings() {
+      setText('location-name','⌖ '+settings.name+', Denmark');
+      el('place-name').value=settings.name;el('place-lat').value=settings.lat;el('place-lon').value=settings.lon;
+      el('worker-url').value=settings.endpoint;el('worker-token').value=settings.token;
+      document.title='Homeboard · '+settings.name+' + Brazil';
+    }
+    function previewWeather() {
+      var now=new Date(), daily={time:[],weather_code:[2,3,61,2,0],temperature_2m_max:[13,12,10,14,14],temperature_2m_min:[7,6,5,7,8],sunrise:[],sunset:[],precipitation_probability_max:[15,25,75,20,5]};
+      for(var i=0;i<5;i++){var d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+i);daily.time.push(localDate(d));daily.sunrise.push(localDate(d)+'T07:45');daily.sunset.push(localDate(d)+'T18:20');}
+      var hourly={time:[],temperature_2m:[],precipitation_probability:[],weather_code:[],is_day:[]};
+      for(var j=0;j<72;j++) {var hd=new Date(now.getFullYear(),now.getMonth(),now.getDate(),j);hourly.time.push(localDate(hd)+'T'+two(hd.getHours())+':00');hourly.temperature_2m.push(8+Math.round(5*Math.sin(j/5)));hourly.precipitation_probability.push((j*7)%70);hourly.weather_code.push(j%8<5?2:61);hourly.is_day.push(hd.getHours()>6&&hd.getHours()<20?1:0);}
+      updateWeather({current:{temperature_2m:12,weather_code:2,is_day:1,time:localDate(now)+'T'+shortTime(now)},daily:daily,hourly:hourly},false);
+      var brdaily={time:daily.time,weather_code:[1,2,0,61,3],temperature_2m_max:[27,29,28,25,24],temperature_2m_min:[17,18,19,17,16],sunrise:daily.sunrise,sunset:daily.sunset,precipitation_probability_max:[15,10,5,65,40]};
+      var brTime=new Date(now.getTime()-3*3600000);var bhr={time:[],temperature_2m:[],precipitation_probability:[],weather_code:[],is_day:[]};
+      for(var k=0;k<72;k++){var tt=new Date(Date.UTC(brTime.getUTCFullYear(),brTime.getUTCMonth(),brTime.getUTCDate(),k));bhr.time.push(tt.getUTCFullYear()+'-'+two(tt.getUTCMonth()+1)+'-'+two(tt.getUTCDate())+'T'+two(tt.getUTCHours())+':00');bhr.temperature_2m.push(23+Math.round(6*Math.sin(k/5)));bhr.precipitation_probability.push((k*5)%75);bhr.weather_code.push(k%9<7?1:61);bhr.is_day.push(tt.getUTCHours()>6&&tt.getUTCHours()<19?1:0);}
+      var brHour=brTime.getUTCFullYear()+'-'+two(brTime.getUTCMonth()+1)+'-'+two(brTime.getUTCDate())+'T'+two(brTime.getUTCHours())+':00';
+      updateBrazilWeather({current:{temperature_2m:25,weather_code:1,is_day:1,apparent_temperature:27,relative_humidity_2m:63,time:brHour},daily:brdaily,hourly:bhr},false);
+      setText('weather-update','Sample forecast');el('preview-bar').style.display='block';
+      var a=new Date(now.getFullYear(),now.getMonth(),now.getDate(),15,30);var b=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1,9,0);
+      manual=[{title:'Walk with the dog',date:localDate(a),time:'15:30'},{title:'Weekend planning',date:localDate(b),time:'09:00'}];
+    }
+    function selectView(name) {
+      var buttons=document.querySelectorAll('.nav-tab'),views=document.querySelectorAll('.view');
+      for(var i=0;i<buttons.length;i++)buttons[i].className='nav-tab'+(buttons[i].getAttribute('data-view')===name?' active':'');
+      for(var j=0;j<views.length;j++)views[j].className='view'+(views[j].id==='view-'+name?' active':'');
+      window.scrollTo(0,0);
+    }
+    // Personal-listening direct streams; old Safari supports native MP3, without libraries.
+    var radioStations = [
+    {
+        "genre": "Rock",
+        "name": "Radio Paradise",
+        "detail": "Eclectic rock & more",
+        "url": "https://stream-uk1.radioparadise.com/mp3-128"
+    },
+    {
+        "genre": "Rock",
+        "name": "Classic Rock · antenne 1",
+        "detail": "Classic rock favourites",
+        "url": "https://streams.antenne1.de/rock/mp3-128/streams.antenne1.de/"
+    },
+    {
+        "genre": "Rock",
+        "name": "Modern Rock · antenne 1",
+        "detail": "Modern and alternative rock",
+        "url": "https://streams.antenne1.de/modernrock/mp3-128/streams.antenne1.de/"
+    },
+    {
+        "genre": "Rock",
+        "name": "Indie Pop Rocks! · SomaFM",
+        "detail": "Indie, alternative and guitar pop",
+        "url": "https://ice5.somafm.com/indiepop-128-mp3"
+    },
+    {
+        "genre": "Rock",
+        "name": "Metal Detector · SomaFM",
+        "detail": "Metal, thrash, prog and doom",
+        "url": "https://ice5.somafm.com/metal-128-mp3"
+    },
+    {
+        "genre": "Rock",
+        "name": "Left Coast 70s · SomaFM",
+        "detail": "Mellow seventies rock",
+        "url": "https://ice5.somafm.com/seventies-128-mp3"
+    },
+    {
+        "genre": "Rock",
+        "name": "Underground 80s · SomaFM",
+        "detail": "New wave, synth and 80s alternative",
+        "url": "https://ice5.somafm.com/u80s-128-mp3"
+    },
+    {
+        "genre": "Rock",
+        "name": "Covers · SomaFM",
+        "detail": "Creative covers of familiar songs",
+        "url": "https://ice5.somafm.com/covers-128-mp3"
+    },
+    {
+        "genre": "Blues",
+        "name": "Blues Radio · Athens",
+        "detail": "Blues, blues rock and R&B",
+        "url": "https://i4.streams.ovh/sc/bluesrad/stream"
+    },
+    {
+        "genre": "Blues",
+        "name": "Seven Inch Soul · SomaFM",
+        "detail": "Vintage soul on 45s",
+        "url": "https://ice5.somafm.com/7soul-128-mp3"
+    },
+    {
+        "genre": "Blues",
+        "name": "Boot Liquor · SomaFM",
+        "detail": "Americana, roots and alt-country",
+        "url": "https://ice5.somafm.com/bootliquor-128-mp3"
+    },
+    {
+        "genre": "Jazz",
+        "name": "Jazz24",
+        "detail": "Classic and contemporary jazz",
+        "url": "https://knkx-live-a.edge.audiocdn.com/6285_128k"
+    },
+    {
+        "genre": "Jazz",
+        "name": "Sonic Universe · SomaFM",
+        "detail": "Adventurous and modern jazz",
+        "url": "https://ice5.somafm.com/sonicuniverse-128-mp3"
+    },
+    {
+        "genre": "Jazz",
+        "name": "Secret Agent · SomaFM",
+        "detail": "Spy jazz, lounge and cinematic grooves",
+        "url": "https://ice5.somafm.com/secretagent-128-mp3"
+    },
+    {
+        "genre": "Jazz",
+        "name": "Illinois Street Lounge · SomaFM",
+        "detail": "Retro lounge, exotica and swing",
+        "url": "https://ice5.somafm.com/illstreet-128-mp3"
+    },
+    {
+        "genre": "Brazil",
+        "name": "Bossa Beyond · SomaFM",
+        "detail": "Bossa nova, samba and Brazilian rhythms",
+        "url": "https://ice5.somafm.com/bossa-128-mp3"
+    },
+    {
+        "genre": "Brazil",
+        "name": "Rádio Cidade · Rio",
+        "detail": "Brazilian rock and pop from Rio",
+        "url": "https://14073.live.streamtheworld.com/RADIOCIDADEAAC.aac"
+    },
+    {
+        "genre": "Brazil",
+        "name": "Rádio Gaúcha · RS",
+        "detail": "News and sports from Rio Grande do Sul",
+        "url": "https://liverdgaupoa.rbsdirect.com.br/primary/gaucha_rbs.sdp/playlist.m3u8"
+    },
+    {
+        "genre": "Brazil",
+        "name": "BH FM · Belo Horizonte",
+        "detail": "Brazilian pop and radio hits",
+        "url": "https://stream.sgr.globo.com/hls/aBHFM/aBHFM.m3u8"
+    },
+    {
+        "genre": "Chill",
+        "name": "Groove Salad · SomaFM",
+        "detail": "Ambient and downtempo",
+        "url": "https://ice5.somafm.com/groovesalad-128-mp3"
+    },
+    {
+        "genre": "Chill",
+        "name": "Groove Salad Classic · SomaFM",
+        "detail": "Original classic chill mix",
+        "url": "https://ice5.somafm.com/gsclassic-128-mp3"
+    },
+    {
+        "genre": "Chill",
+        "name": "Drone Zone · SomaFM",
+        "detail": "Deep ambient soundscapes",
+        "url": "https://ice5.somafm.com/dronezone-128-mp3"
+    },
+    {
+        "genre": "Chill",
+        "name": "Space Station Soma",
+        "detail": "Spaced-out ambient electronica",
+        "url": "https://ice5.somafm.com/spacestation-128-mp3"
+    },
+    {
+        "genre": "Chill",
+        "name": "Beat Blender · SomaFM",
+        "detail": "Deep house and downtempo",
+        "url": "https://ice5.somafm.com/beatblender-128-mp3"
+    },
+    {
+        "genre": "Chill",
+        "name": "Folk Forward · SomaFM",
+        "detail": "Indie folk and singer-songwriters",
+        "url": "https://ice5.somafm.com/folkfwd-128-mp3"
+    },
+    {
+        "genre": "Chill",
+        "name": "Lush · SomaFM",
+        "detail": "Soft vocals and mellow electronic",
+        "url": "https://ice5.somafm.com/lush-128-mp3"
+    },
+    {
+        "genre": "Chill",
+        "name": "Heavyweight Reggae · SomaFM",
+        "detail": "Roots reggae, ska and rocksteady",
+        "url": "https://ice5.somafm.com/reggae-128-mp3"
+    },
+    {
+        "genre": "Chill",
+        "name": "PopTron · SomaFM",
+        "detail": "Bright electropop and indie dance",
+        "url": "https://ice5.somafm.com/poptron-128-mp3"
+    }
+];
+    var selectedGenre = 'All';
+    var stationFavorites = readStore('homeboard-radio-favorites',[]);
+    if(!Array.isArray(stationFavorites))stationFavorites=[];
+    function isStationFavorite(url) {return stationFavorites.indexOf(url)!==-1;}
+    function renderStations() {
+      var box=el('station-directory');box.innerHTML='';
+      var filter=(el('station-search').value||'').toLowerCase().trim(),count=0;
+      for(var i=0;i<radioStations.length;i++) {
+        var entry=radioStations[i];
+        if(selectedGenre!=='All' && selectedGenre!=='Favorites' && selectedGenre!==entry.genre)continue;
+        if(selectedGenre==='Favorites' && !isStationFavorite(entry.url))continue;
+        if(filter && (entry.name+' '+entry.detail+' '+entry.genre).toLowerCase().indexOf(filter)===-1)continue;
+        count++;
+        var row=document.createElement('div');row.className='station-row';
+        var btn=document.createElement('button');btn.className='station'+(audioKind==='radio' && audioSource===entry.url?' active':'');
+        btn.setAttribute('data-radio',entry.url);btn.setAttribute('data-name',entry.name);
+        var copy=document.createElement('span');makeText(copy,'strong','',entry.name);makeText(copy,'small','',entry.detail);btn.appendChild(copy);
+        makeText(btn,'span','','▶');
+        btn.onclick=function(){audioStart(this.getAttribute('data-radio'),this.getAttribute('data-name'),'radio');};
+        row.appendChild(btn);
+        var star=document.createElement('button');star.className='favorite-station'+(isStationFavorite(entry.url)?' is-favorite':'');
+        star.textContent=isStationFavorite(entry.url)?'★':'☆';star.setAttribute('data-url',entry.url);
+        star.setAttribute('aria-label',(isStationFavorite(entry.url)?'Remove favorite':'Add favorite')+' '+entry.name);
+        star.onclick=function(){var u=this.getAttribute('data-url'),ix=stationFavorites.indexOf(u);
+          if(ix<0)stationFavorites.push(u);else stationFavorites.splice(ix,1);
+          saveStore('homeboard-radio-favorites',stationFavorites);renderStations();};
+        row.appendChild(star);box.appendChild(row);
+      }
+      setText('station-count','· '+count+' / '+radioStations.length);
+      if(count===0){var msg=document.createElement('div');msg.className='station-empty';msg.textContent='No matching stations. Try another genre or search.';box.appendChild(msg);}
+    }
+    var filterButtons=document.querySelectorAll('.filter-chip');
+    for(var f=0;f<filterButtons.length;f++)filterButtons[f].onclick=function(){
+      selectedGenre=this.getAttribute('data-genre');
+      for(var k=0;k<filterButtons.length;k++)filterButtons[k].className='filter-chip'+(filterButtons[k].getAttribute('data-genre')===selectedGenre?' active':'');
+      renderStations();};
+    el('station-search').oninput=renderStations;
+    function musicStatus(text) {setText('player-status',text);}
+    function updatePlayerState() {el('player-toggle').textContent=el('music-audio').paused?'▶':'❚❚';}
+    function clearSelectedStations() {var stations=document.querySelectorAll('.station');for(var i=0;i<stations.length;i++)stations[i].className='station';}
+    function audioStart(url,label,kind,trackIndex) {
+      var a=el('music-audio');
+      if(!url)return;
+      audioKind=kind;audioLabel=label;currentTrack=typeof trackIndex==='number'?trackIndex:-1;
+      if(audioSource!==url){audioSource=url;a.src=url;a.load();}
+      setText('player-title',label);musicStatus('Connecting…');clearSelectedStations();
+      var stations=document.querySelectorAll('.station');
+      if(kind==='radio')for(var i=0;i<stations.length;i++)if(stations[i].getAttribute('data-radio')===url)stations[i].className='station active';
+      renderTrackSelection();renderStations();
+      try {var result=a.play();if(result&&result.catch)result.catch(function(){musicStatus('Tap Play to start or try another stream');updatePlayerState();});}
+      catch(e){musicStatus('Tap Play to start or try another stream');}
+      updatePlayerState();
+    }
+    function renderTrackSelection() {
+      var box=el('music-tracks');if(!audioTracks.length)return;
+      box.innerHTML='';for(var i=0;i<audioTracks.length;i++){
+        var btn=document.createElement('button');btn.className='track'+(currentTrack===i?' active':'');
+        btn.textContent=(i+1)+'.  '+audioTracks[i].name;btn.setAttribute('data-track',''+i);box.appendChild(btn);
+      }
+      var t=box.querySelectorAll('.track');for(var k=0;k<t.length;k++)t[k].onclick=function(){var n=parseInt(this.getAttribute('data-track'),10);audioStart(audioTracks[n].url,audioTracks[n].name,'file',n);};
+    }
+    function changeTrack(step) {
+      if(audioKind!=='file'||!audioTracks.length){selectView('music');return;}
+      var idx=(currentTrack+step+audioTracks.length)%audioTracks.length;
+      audioStart(audioTracks[idx].url,audioTracks[idx].name,'file',idx);
+    }
+    var views=document.querySelectorAll('.nav-tab');for(var vi=0;vi<views.length;vi++)views[vi].onclick=function(){selectView(this.getAttribute('data-view'));};
+    var arrows=document.querySelectorAll('.hourly-arrow');for(var ai=0;ai<arrows.length;ai++)arrows[ai].onclick=function(){var target=el(this.getAttribute('data-scroll'));target.scrollLeft+=parseInt(this.getAttribute('data-dir'),10)*240;};
+    el('player-open').onclick=function(){selectView('music');};
+    el('player-toggle').onclick=function(){var a=el('music-audio');if(a.paused){if(!audioSource){audioStart(radioDefault.url,radioDefault.name,'radio');}else{try{var p=a.play();if(p&&p.catch)p.catch(function(){musicStatus('Playback blocked — tap a station to retry');});}catch(e){musicStatus('Could not start audio');}}}else{a.pause();}updatePlayerState();};
+    el('player-prev').onclick=function(){changeTrack(-1);};
+    el('player-next').onclick=function(){changeTrack(1);};
+    var audio=el('music-audio');
+    audio.onplay=function(){musicStatus(audioKind==='radio'?'Connecting to live radio…':'Playing selected file');updatePlayerState();};
+    audio.onplaying=function(){musicStatus(audioKind==='radio'?'● Live internet radio':'Playing from this iPad');updatePlayerState();};
+    audio.onpause=function(){musicStatus('Paused');updatePlayerState();};
+    audio.onwaiting=function(){musicStatus('Buffering…');};
+    audio.onerror=function(){musicStatus('Stream or file could not play. Choose another.');updatePlayerState();};
+    audio.onended=function(){if(audioKind==='file'&&currentTrack<audioTracks.length-1)changeTrack(1);else{musicStatus('Playback finished');updatePlayerState();}};
+    var stationButtons=document.querySelectorAll('.station');for(var st=0;st<stationButtons.length;st++)stationButtons[st].onclick=function(){audioStart(this.getAttribute('data-radio'),this.getAttribute('data-name'),'radio');};
+    el('music-files').onchange=function(event){
+      var files=event.target.files;if(!files||!files.length)return;
+      for(var i=0;i<audioTracks.length;i++)try{URL.revokeObjectURL(audioTracks[i].url);}catch(e){}
+      audioTracks=[];for(var j=0;j<files.length;j++){
+        if(files[j].size>120000000){continue;} // Skip huge files on memory-limited iPad Air 1.
+        audioTracks.push({name:files[j].name,url:URL.createObjectURL(files[j])});
+      }
+      if(audioTracks.length){renderTrackSelection();audioStart(audioTracks[0].url,audioTracks[0].name,'file',0);}
+      else musicStatus('No playable files (limit 120 MB per file)');
+    };
+    el('play-custom').onclick=function(){var u=el('radio-url').value.trim();if(!/^https:\/\/[^ ]+$/i.test(u)){musicStatus('Enter a direct HTTPS audio stream URL');return;}
+      if(/\.(m3u|pls)(\?|$)/i.test(u)){musicStatus('Use the station’s direct MP3/AAC stream, not a playlist URL');return;}
+      audioStart(u,'Custom internet radio','radio');
+    };
+    el('settings-button').onclick=function(){openModal('calendar');};
+    el('connect-button').onclick=function(){openModal('calendar');};
+    el('add-button').onclick=function(){openModal('events');};
+    el('close-modal').onclick=closeModal;
+    el('overlay').onclick=function(e){if(e.target===el('overlay'))closeModal();};
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+    var tabs=document.querySelectorAll('.tab');for(var i=0;i<tabs.length;i++)tabs[i].onclick=function(){selectTab(this.getAttribute('data-tab'));el('modal-message').style.display='none';};
+    el('ics-file').onchange=function(evt){var file=evt.target.files&&evt.target.files[0];if(!file)return;
+      if(file.size>750000){showMessage('This .ics file is too large for this older iPad (maximum 750 KB). Export a smaller calendar or use the sync bridge.',true);return;}
+      var reader=new FileReader();reader.onload=function(){var s=String(reader.result||'');var events=parseICS(s);if(!events.length){showMessage('No readable events found in the selected file.',true);return;}
+        var stored=saveStore('homeboard-imported-ics',s);
+        importedText=s;imported=events;displayCalendar();
+        showMessage(stored?'Imported '+events.length+' events. The calendar stays on this iPad until you import another file.':'Imported '+events.length+' events for this session, but browser storage is unavailable. To keep them, open the dashboard on an HTTPS website.',!stored);};reader.onerror=function(){showMessage('Could not open this file.',true);};reader.readAsText(file);};
+    el('save-calendar').onclick=function(){var url=el('worker-url').value.trim(),token=el('worker-token').value.trim();
+      if(url && (!/^https:\/\/[a-z0-9.-]+(?::\d+)?(?:\/.*)?$/i.test(url)||!token)){showMessage('Enter a valid HTTPS Worker URL and its access token.',true);return;}
+      settings.endpoint=url;settings.token=token;saveStore('homeboard-settings',settings);remote=[];displayCalendar();if(url){refreshCalendar();showMessage('Settings saved. Trying to sync from your calendar bridge.');}else{showMessage('Automatic calendar sync disconnected. Local events remain available.');}};
+    el('clear-calendar').onclick=function(){importedText='';imported=[];saveStore('homeboard-imported-ics','');displayCalendar();showMessage('The locally imported calendar was removed.');};
+    el('save-event').onclick=function(){var title=el('event-title').value.trim(),date=el('event-day').value,time=el('event-time').value||'09:00';
+      if(!title||!/\d{4}-\d{2}-\d{2}/.test(date)){showMessage('Please enter an event name and date.',true);return;}
+      if(!Array.isArray(manual))manual=[];manual.push({title:title,date:date,time:time});saveStore('homeboard-manual-events',manual);displayCalendar();el('event-title').value='';showMessage('Event added to this iPad. It will not be added to your actual iCloud account.');};
+    el('clear-events').onclick=function(){manual=[];saveStore('homeboard-manual-events',manual);displayCalendar();showMessage('Manually added events cleared.');};
+    el('save-place').onclick=function(){var name=el('place-name').value.trim(),lat=parseFloat(el('place-lat').value),lon=parseFloat(el('place-lon').value);
+      if(!name||!isFinite(lat)||!isFinite(lon)||Math.abs(lat)>90||Math.abs(lon)>180){showMessage('Enter a place name and valid latitude/longitude.',true);return;}
+      settings.name=name;settings.lat=lat;settings.lon=lon;saveStore('homeboard-settings',settings);applySettings();loadWeather();showMessage('Location updated. Loading weather…');};
+    el('reset-place').onclick=function(){settings.name='Aarhus';settings.lat=56.1629;settings.lon=10.2039;saveStore('homeboard-settings',settings);applySettings();loadWeather();showMessage('Weather location reset to Aarhus.');};
+    if(!Array.isArray(manual))manual=[];
+    if(importedText && !isPreview){imported=parseICS(importedText);}
+    if(isPreview)previewWeather();
+    renderStations();applySettings();updateClock();displayCalendar();loadWeather();loadBrazilWeather();refreshCalendar();
+    var now=new Date();el('event-day').value=localDate(now);
+    setInterval(updateClock,15000);
+    setInterval(displayCalendar,900000);
+    setInterval(loadWeather,900000);
+    setInterval(loadBrazilWeather,900000);
+    setInterval(refreshCalendar,1800000);
+    document.addEventListener('visibilitychange',function(){if(!document.hidden){updateClock();loadWeather();loadBrazilWeather();refreshCalendar();displayCalendar();}});
+  })();
+  </script>
+</body>
+</html>
