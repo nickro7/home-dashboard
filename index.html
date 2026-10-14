@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Homeboard">
   <meta name="theme-color" content="#171d19">
-  <title>Homeboard V5 · Kitchen Edition</title>
+  <title>Homeboard V6 · Kitchen Edition</title>
   <style>
     :root { --bg:#0b1321; --surface:#142136; --surface2:#182940; --edge:#273953; --text:#f4f5f7; --muted:#94a6be; --faint:#6b7e97; --teal:#7ddbc2; --amber:#f9ca89; --blue:#83bafb; }
     * { box-sizing:border-box; }
@@ -584,6 +584,136 @@
       .grocery-quick { overflow-x:auto; flex-wrap:nowrap; }
       .grocery-quick button { flex:0 0 auto; }
     }
+
+    /* V6 — kitchen timer and two daily language cards. Designed for 1024x768 iOS 12. */
+    .learning-strip { display:grid; grid-template-columns:.88fr 1.17fr 1.17fr; grid-gap:10px; min-height:0; }
+    .timer-card,.word-card { padding:12px 15px 10px; min-height:0; display:flex; flex-direction:column; }
+    .timer-top,.word-top { display:flex; align-items:center; justify-content:space-between; }
+    .mini-eyebrow { font-size:11px; text-transform:uppercase; font-weight:750; letter-spacing:.08em; color:#c4d4bb; }
+    .timer-preset { font-size:11px; color:#cbd9bf; font-weight:650; }
+    .timer-body { display:flex; align-items:center; justify-content:space-between; margin-top:6px; }
+    .timer-display { font-size:39px; font-weight:520; letter-spacing:-.05em; font-variant-numeric:tabular-nums; line-height:1; color:#f3f2e7; white-space:nowrap; }
+    .timer-card.finished { background:#415a40; border-color:#c5d8ac; }
+    .timer-card.finished .timer-display { color:#fcf6cf; }
+    .timer-sub { color:#c2d2bc; font-size:11px; line-height:1.25; margin-top:4px; }
+    .timer-amount { display:flex; align-items:center; }
+    .timer-amount button { width:31px; height:31px; border-radius:8px; color:#eef2e4; background:#3b4b3d; border:1px solid #677f65; font-size:19px; }
+    .timer-amount span { color:#dde5d5; font-size:11px; margin:0 5px; white-space:nowrap; }
+    .timer-controls { display:flex; margin-top:auto; padding-top:7px; }
+    .timer-controls button { flex:1; padding:7px 4px; border-radius:9px; background:#3b503e; color:#f4f2e6; border:1px solid #748970; font-size:12px; font-weight:720; }
+    .timer-controls button + button { margin-left:7px; }
+    .timer-controls .timer-primary { background:#bad1ae; color:#213425; border-color:#bad1ae; }
+    .word-top { margin-bottom:5px; }
+    .language-name { font-size:10px; letter-spacing:.085em; font-weight:750; color:#d1dcc9; text-transform:uppercase; }
+    .word-audio { min-width:34px; height:29px; background:#405b46; color:#eaf0e0; border:1px solid #7d977b; border-radius:8px; font-size:15px; }
+    .word-head { display:flex; align-items:baseline; flex-wrap:wrap; margin-bottom:2px; }
+    .word-native { color:#f4f2e8; font-size:24px; line-height:1.13; font-weight:720; margin-right:8px; }
+    .word-pron { font-size:11px; color:#c8d7c4; }
+    .word-meaning { color:#c7d8be; font-size:12px; margin-bottom:6px; font-weight:640; }
+    .word-example { font-size:12px; line-height:1.32; color:#e9e9df; }
+    .word-english { font-size:11px; line-height:1.25; color:#aebfaa; margin-top:3px; }
+    .word-voice-note { color:#c4b48e; font-size:10px; margin-top:4px; }
+    @media (min-width:851px) and (orientation:landscape) {
+      .dashboard { grid-template-rows:minmax(0,1fr) 170px; grid-template-columns:1.22fr .78fr; grid-gap:10px; }
+      .dashboard > .left { grid-column:1; grid-row:1; grid-template-rows:1.47fr .91fr .99fr .66fr; grid-gap:8px; min-height:0; }
+      .dashboard > .right { grid-column:2; grid-row:1; min-height:0; }
+      .dashboard > .learning-strip { grid-column:1 / 3; grid-row:2; }
+      .hero { padding:10px 15px; }
+      .hero-bottom { left:15px; right:15px; bottom:11px; }
+      .hero .time { font-size:62px; }
+      .hero .today { font-size:12px; margin-top:3px; }
+      .hero .section-eyebrow { font-size:10px; }
+      .hero #greeting { font-size:12px; margin-top:4px; }
+      .hero .outside-icon { font-size:21px; margin-bottom:1px; }
+      .hero .outside-temp { font-size:30px; }
+      .hero .outside-desc,.hero .outside-label { font-size:10px; margin-top:2px; }
+      .hero .hero-location { font-size:11px; padding:5px 8px; }
+      .forecast { padding:9px 13px 6px; }
+      .forecast .forecast-grid { margin-top:6px; }
+      .forecast .forecast-day { padding:1px 0 3px; }
+      .forecast .forecast-day-name { font-size:11px; }
+      .forecast .forecast-icon { font-size:19px; }
+      .forecast .forecast-temps { font-size:13px; }
+      .forecast .forecast-rain { font-size:9px; }
+      .forecast .card-title,.hourly-card .card-title { font-size:14px; }
+      .hourly-card { padding:8px 12px 6px; }
+      .hourly-card .hourly-scroll { margin-top:4px; padding-bottom:0; }
+      .hourly-card .hour-cell { flex-basis:70px; min-width:70px; }
+      .hourly-card .hour-icon { font-size:17px; }
+      .hourly-card .hour-time { font-size:10px; }
+      .hourly-card .hour-temp { font-size:14px; }
+      .hourly-card .hour-pop { font-size:9px; }
+      .hourly-card .hourly-arrow { width:28px; height:25px; font-size:16px; }
+      .home-details { grid-gap:7px; }
+      .home-details .detail-card { padding:7px 8px; }
+      .home-details .detail-top { font-size:8px; }
+      .home-details .detail-value { font-size:16px; margin-top:3px; }
+      .home-details .detail-foot { font-size:9px; margin-top:1px; }
+      .home-details .sun-times .divider-v { height:24px; }
+      .home-details .sensor-soon { font-size:11px; }
+      .brazil-mini { padding:5px 8px; }
+      .brazil-mini-heading { font-size:9px; }
+      .brazil-mini-line { margin-top:3px; }
+      .brazil-mini-time { font-size:22px; }
+      .brazil-mini-weather { font-size:16px; }
+      .brazil-mini-desc { font-size:9px; }
+      .grocery { padding:11px 15px 8px; }
+      .grocery-heading { font-size:22px; }
+      .grocery-form { margin-top:8px; }
+      .grocery-form input { padding:8px; }
+      .grocery-quick-label { margin-top:7px; }
+      .grocery-quick { margin-top:4px; }
+      .grocery-quick button { padding:6px 10px; }
+      .grocery-list-title { padding:7px 0 5px; margin-top:2px; }
+      .grocery-row { min-height:38px; }
+      .grocery-toggle,.grocery-remove { height:38px; }
+      .grocery-name { font-size:15px; }
+      .grocery-footer { margin-top:4px; padding-top:5px; }
+    }
+    @media (min-width:851px) and (orientation:landscape) and (max-height:720px) {
+      .dashboard { grid-template-rows:minmax(0,1fr) 158px; }
+      .timer-card,.word-card { padding:9px 12px 7px; }
+      .timer-display { font-size:32px; }
+      .word-native { font-size:21px; }
+      .word-example { font-size:11px; }
+      .word-meaning { margin-bottom:3px; }
+      .timer-controls { padding-top:4px; }
+      .timer-controls button { padding:5px 3px; }
+    }
+    @media (max-width:850px) and (orientation:portrait) {
+      .learning-strip { display:block; }
+      .timer-card,.word-card { min-height:165px; margin-bottom:10px; }
+      .timer-card { min-height:165px; }
+      .word-native { font-size:25px; }
+    }
+
+    /* V6 compactness polish: prevent grocery essentials and forecast rows clipping. */
+    @media (min-width:851px) and (orientation:landscape) {
+      .grocery .grocery-heading { margin-top:2px; }
+      .grocery .grocery-form { margin-top:5px; }
+      .grocery .grocery-form input { padding:7px 9px; }
+      .grocery .grocery-quick-label { margin-top:3px; font-size:9px; }
+      .grocery .grocery-quick { margin-top:3px; }
+      .grocery .grocery-quick button { padding:5px 8px; font-size:12px; }
+      .grocery .grocery-list-title { padding:5px 0 4px; }
+      .grocery .grocery-row { min-height:34px; }
+      .grocery .grocery-toggle,.grocery .grocery-remove { height:34px; }
+      .grocery .grocery-footer { padding-top:4px; margin-top:2px; }
+      .forecast .forecast-grid,.hourly-card .hourly-scroll { min-height:0; }
+    }
+    @media (min-width:851px) and (orientation:landscape) and (max-height:720px) {
+      .dashboard { grid-template-rows:minmax(0,1fr) 146px; }
+      .hero .time { font-size:45px; }
+      .hero-bottom { bottom:6px; }
+      .dashboard > .left { grid-template-rows:1.35fr 1.04fr 1.1fr .71fr; }
+      .forecast .forecast-icon { font-size:16px; }
+      .forecast .forecast-temps { font-size:12px; }
+      .forecast .forecast-rain { font-size:8px; }
+      .hourly-card .hour-icon { font-size:16px; }
+      .hourly-card .hour-temp { font-size:12px; }
+      .hourly-card .hour-pop { font-size:8px; }
+      .hourly-card .hourly-scroll { margin-top:1px; }
+    }
   </style>
 </head>
 <body>
@@ -591,7 +721,7 @@
     <header class="topbar">
       <div class="brand">
         <div class="brand-icon">⌂</div>
-        <div><div class="brand-name">HOMEBOARD</div><div class="brand-sub">Kitchen edition · V5</div></div>
+        <div><div class="brand-name">HOMEBOARD</div><div class="brand-sub">Kitchen edition · V6</div></div>
       </div>
       <nav class="nav-tabs" aria-label="Dashboard sections">
         <button class="nav-tab active" data-view="home">⌂ Home</button>
@@ -670,6 +800,30 @@
             <span id="grocery-save-state">Saved on this iPad</span>
             <button id="grocery-clear" type="button">Clear checked ✓</button>
           </div>
+        </section>
+      </div>
+
+      <div class="learning-strip" aria-label="Kitchen timer and languages of the day">
+        <section class="card timer-card" id="timer-card" aria-label="Kitchen timer">
+          <div class="timer-top"><span class="mini-eyebrow">⏱ Kitchen timer</span><span class="timer-preset">🥚 Soft eggs</span></div>
+          <div class="timer-body"><span class="timer-display" id="timer-display" aria-live="off">05:00</span>
+            <span class="timer-amount"><button type="button" id="timer-minus" aria-label="Decrease timer one minute">−</button><span id="timer-duration">5 min</span><button type="button" id="timer-plus" aria-label="Increase timer one minute">+</button></span></div>
+          <div class="timer-sub" id="timer-status" role="status">Ready · 5-second alarm</div>
+          <div class="timer-controls"><button type="button" class="timer-primary" id="timer-start">▶ Start</button><button type="button" id="timer-reset">↺ Reset</button></div>
+        </section>
+        <section class="card word-card" aria-label="Danish word of the day">
+          <div class="word-top"><span class="language-name">🇩🇰 Danish · word of the day</span><button type="button" class="word-audio" data-language="da-DK" aria-label="Listen to the Danish word" title="Hear the word">🔊</button></div>
+          <div class="word-head"><span class="word-native" id="danish-word">—</span><span class="word-pron" id="danish-pronunciation"></span></div>
+          <div class="word-meaning" id="danish-meaning"></div>
+          <div class="word-example" id="danish-example"></div>
+          <div class="word-english" id="danish-english"></div>
+        </section>
+        <section class="card word-card" aria-label="Italian word of the day">
+          <div class="word-top"><span class="language-name">🇮🇹 Italian · word of the day</span><button type="button" class="word-audio" data-language="it-IT" aria-label="Listen to the Italian word" title="Hear the word">🔊</button></div>
+          <div class="word-head"><span class="word-native" id="italian-word">—</span><span class="word-pron" id="italian-pronunciation"></span></div>
+          <div class="word-meaning" id="italian-meaning"></div>
+          <div class="word-example" id="italian-example"></div>
+          <div class="word-english" id="italian-english"></div>
         </section>
       </div>
     </main></div>
@@ -1549,6 +1703,140 @@
       if(!name||!isFinite(lat)||!isFinite(lon)||Math.abs(lat)>90||Math.abs(lon)>180){showMessage('Enter a place name and valid latitude/longitude.',true);return;}
       settings.name=name;settings.lat=lat;settings.lon=lon;saveStore('homeboard-settings',settings);applySettings();loadWeather();showMessage('Location updated. Loading weather…');};
     el('reset-place').onclick=function(){settings.name='Aarhus';settings.lat=56.1629;settings.lon=10.2039;saveStore('homeboard-settings',settings);applySettings();loadWeather();showMessage('Weather location reset to Aarhus.');};
+
+    // V6: one daily word for each language. All text is bundled locally; no remote translation or paid API.
+    var danishWords = [{"word":"hygge","pron":"/ˈhykə/","meaning":"cosiness; enjoying time together","sentence":"Vi hygger os i køkkenet.","english":"We are having a cosy time in the kitchen."},{"word":"tak","pron":"/tɑɡ/","meaning":"thank you","sentence":"Tak for hjælpen.","english":"Thanks for the help."},{"word":"dejlig","pron":"/ˈdɑjli/","meaning":"lovely; delightful","sentence":"Det er en dejlig dag.","english":"It is a lovely day."},{"word":"morgen","pron":"/ˈmɒːn/","meaning":"morning","sentence":"Vi drikker kaffe om morgenen.","english":"We drink coffee in the morning."},{"word":"vindue","pron":"/ˈvenə/","meaning":"window","sentence":"Vinduet er åbent.","english":"The window is open."},{"word":"færdig","pron":"/ˈfæːɐdi/","meaning":"finished; ready","sentence":"Maden er færdig.","english":"The food is ready."},{"word":"aftensmad","pron":"/ˈɑfdn̩sˌmað/","meaning":"evening meal; dinner","sentence":"Vi laver aftensmad sammen.","english":"We make dinner together."},{"word":"rolig","pron":"/ˈʁoːli/","meaning":"calm; quiet","sentence":"Det er en rolig aften.","english":"It is a quiet evening."},{"word":"snart","pron":"/snɑːd/","meaning":"soon","sentence":"Vi spiser snart.","english":"We will eat soon."},{"word":"skål","pron":"/skɔːl/","meaning":"cheers","sentence":"Skål for weekenden!","english":"Cheers to the weekend!"},{"word":"hyggelig","pron":"/ˈhykəli/","meaning":"cosy; pleasant","sentence":"Det er en hyggelig aften.","english":"It is a cosy evening."},{"word":"brød","pron":"/bʁœð/","meaning":"bread","sentence":"Der er frisk brød på bordet.","english":"There is fresh bread on the table."},{"word":"kaffe","pron":"/ˈkafə/","meaning":"coffee","sentence":"Vil du have kaffe?","english":"Would you like coffee?"},{"word":"glæde","pron":"/ˈɡlɛːðə/","meaning":"joy","sentence":"Det giver mig glæde.","english":"That brings me joy."},{"word":"sammen","pron":"/ˈsɑmən/","meaning":"together","sentence":"Vi spiser sammen i aften.","english":"We are eating together tonight."},{"word":"uge","pron":"/ˈuːə/","meaning":"week","sentence":"Det bliver en travl uge.","english":"It is going to be a busy week."},{"word":"regn","pron":"/ʁɑjn/","meaning":"rain","sentence":"Der kommer regn senere.","english":"Rain is coming later."},{"word":"lille","pron":"/ˈlilə/","meaning":"small; little","sentence":"Vi har en lille have.","english":"We have a small garden."},{"word":"tid","pron":"/tið/","meaning":"time","sentence":"Har du tid til kaffe?","english":"Do you have time for coffee?"},{"word":"fredag","pron":"/ˈfʁɛːdæ/","meaning":"Friday","sentence":"Vi ses på fredag.","english":"See you on Friday."},{"word":"måske","pron":"/ˈmɔsgə/","meaning":"maybe; perhaps","sentence":"Måske bliver det solskin.","english":"Maybe it will be sunny."},{"word":"velkommen","pron":"/vɛlˈkɔmən/","meaning":"welcome","sentence":"Velkommen hjem!","english":"Welcome home!"},{"word":"frisk","pron":"/fʁesɡ/","meaning":"fresh","sentence":"Luften er frisk i dag.","english":"The air is fresh today."},{"word":"nemt","pron":"/nɛmd/","meaning":"easy","sentence":"Det er nemt at lave.","english":"It is easy to make."}];
+    var italianWords = [{"word":"buongiorno","pron":"/bwonˈdʒorno/","meaning":"good morning; good day","sentence":"Buongiorno! Il caffè è pronto.","english":"Good morning! The coffee is ready."},{"word":"sereno","pron":"/seˈrɛno/","meaning":"calm; peaceful","sentence":"Oggi è un giorno sereno.","english":"Today is a peaceful day."},{"word":"insieme","pron":"/inˈsjɛme/","meaning":"together","sentence":"Cuciniamo insieme stasera.","english":"We are cooking together tonight."},{"word":"cucina","pron":"/kuˈtʃina/","meaning":"kitchen; cuisine","sentence":"La cucina è piena di luce.","english":"The kitchen is full of light."},{"word":"prego","pron":"/ˈprɛɡo/","meaning":"you’re welcome; please","sentence":"Grazie! — Prego!","english":"Thank you! — You’re welcome!"},{"word":"grazie","pron":"/ˈɡrattsje/","meaning":"thank you","sentence":"Grazie per il tuo aiuto.","english":"Thank you for your help."},{"word":"domani","pron":"/doˈmani/","meaning":"tomorrow","sentence":"Ci vediamo domani.","english":"See you tomorrow."},{"word":"piano","pron":"/ˈpjano/","meaning":"slowly; gently","sentence":"Parla piano, per favore.","english":"Speak softly, please."},{"word":"acqua","pron":"/ˈakkwa/","meaning":"water","sentence":"Vorrei un bicchiere d’acqua.","english":"I would like a glass of water."},{"word":"famiglia","pron":"/faˈmiʎʎa/","meaning":"family","sentence":"La famiglia si riunisce a cena.","english":"The family gets together for dinner."},{"word":"bellissimo","pron":"/belˈlissimo/","meaning":"beautiful; wonderful","sentence":"Che panorama bellissimo!","english":"What a beautiful view!"},{"word":"colazione","pron":"/kolatˈtsjone/","meaning":"breakfast","sentence":"La colazione è pronta.","english":"Breakfast is ready."},{"word":"amico","pron":"/aˈmiko/","meaning":"friend","sentence":"Un amico viene a trovarci.","english":"A friend is coming to visit us."},{"word":"tempo","pron":"/ˈtɛmpo/","meaning":"time; weather","sentence":"Oggi il tempo è bello.","english":"The weather is nice today."},{"word":"sorriso","pron":"/sorˈrizo/","meaning":"smile","sentence":"Il suo sorriso è contagioso.","english":"Her smile is contagious."},{"word":"sempre","pron":"/ˈsɛmpre/","meaning":"always","sentence":"C’è sempre tempo per un caffè.","english":"There is always time for coffee."},{"word":"stanco","pron":"/ˈstaŋko/","meaning":"tired","sentence":"Sono stanco dopo il lavoro.","english":"I am tired after work."},{"word":"allora","pron":"/alˈlora/","meaning":"so; then; well","sentence":"Allora, cosa mangiamo?","english":"So, what are we eating?"},{"word":"pronto","pron":"/ˈpronto/","meaning":"ready","sentence":"La cena è pronta!","english":"Dinner is ready!"},{"word":"magari","pron":"/maˈɡari/","meaning":"maybe; if only","sentence":"Magari andiamo al mare domani.","english":"Maybe we will go to the beach tomorrow."},{"word":"pausa","pron":"/ˈpauza/","meaning":"break; pause","sentence":"Facciamo una piccola pausa.","english":"Let’s take a short break."},{"word":"casa","pron":"/ˈkaza/","meaning":"home; house","sentence":"Finalmente siamo a casa.","english":"We are finally home."},{"word":"sole","pron":"/ˈsole/","meaning":"sun","sentence":"Oggi splende il sole.","english":"The sun is shining today."},{"word":"felice","pron":"/feˈlitʃe/","meaning":"happy","sentence":"Sono felice di vederti.","english":"I am happy to see you."}];
+    var todaysWords = {};
+    var previousWordDay = '';
+    function renderWords() {
+      var now=new Date(), day=localDate(now);
+      if(day===previousWordDay)return;
+      previousWordDay=day;
+      var ordinal=Math.floor(Date.UTC(now.getFullYear(),now.getMonth(),now.getDate())/86400000);
+      todaysWords['da-DK']=danishWords[(ordinal+5)%danishWords.length];
+      todaysWords['it-IT']=italianWords[(ordinal+9)%italianWords.length];
+      function show(prefix,item) {
+        setText(prefix+'-word',item.word);
+        setText(prefix+'-pronunciation',item.pron);
+        setText(prefix+'-meaning',item.meaning);
+        setText(prefix+'-example',item.sentence);
+        setText(prefix+'-english','EN: '+item.english);
+      }
+      show('danish',todaysWords['da-DK']);show('italian',todaysWords['it-IT']);
+    }
+    var speechButtons=document.querySelectorAll('.word-audio');
+    for(var sb=0;sb<speechButtons.length;sb++)speechButtons[sb].onclick=function() {
+      var locale=this.getAttribute('data-language'),item=todaysWords[locale],button=this;
+      if(!item)return;
+      if(!('speechSynthesis' in window) || !window.SpeechSynthesisUtterance) {
+        button.title='Speech audio is not available in this iPad browser';button.textContent='×';return;
+      }
+      try {
+        window.speechSynthesis.cancel();
+        var utterance=new SpeechSynthesisUtterance(item.word);
+        utterance.lang=locale;utterance.rate=.83;utterance.volume=1;
+        var voices=window.speechSynthesis.getVoices();
+        for(var s=0;s<voices.length;s++)if(voices[s].lang.toLowerCase()===locale.toLowerCase()) {utterance.voice=voices[s];break;}
+        button.textContent='◖))';
+        utterance.onend=function(){button.textContent='🔊';};
+        utterance.onerror=function(){button.textContent='🔊';button.title='Install or enable '+locale+' speech voice in iPad settings';};
+        window.speechSynthesis.speak(utterance);
+      }catch(e){button.textContent='🔊';button.title='Voice playback unavailable';}
+    };
+
+    // Wall-kitchen timer. Date.now-based so throttled tabs do not delay the countdown.
+    var timerMinutes=5, timerRemaining=300, timerDeadline=0, timerRunning=false;
+    var timerAudioContext=null, timerAlarmOscillator=null, timerAlarmGain=null;
+    var timerLastState='ready';
+    function formatTimer(seconds) {
+      var n=Math.max(0,Math.ceil(seconds));
+      return two(Math.floor(n/60))+':'+two(n%60);
+    }
+    function timerAlarmStop() {
+      if(timerAlarmOscillator)try{timerAlarmOscillator.stop(0);}catch(e){}
+      if(timerAlarmOscillator)try{timerAlarmOscillator.disconnect();}catch(e){}
+      if(timerAlarmGain)try{timerAlarmGain.disconnect();}catch(e){}
+      timerAlarmOscillator=null;timerAlarmGain=null;
+    }
+    function timerAudioUnlock() {
+      try {
+        var AC=window.AudioContext||window.webkitAudioContext;
+        if(!AC)return;
+        if(!timerAudioContext)timerAudioContext=new AC();
+        if(timerAudioContext.state==='suspended' && timerAudioContext.resume)timerAudioContext.resume();
+        // Unlock iOS audio within the direct Start gesture, before a 5-minute delay.
+        var o=timerAudioContext.createOscillator(),g=timerAudioContext.createGain();
+        g.gain.value=0;o.connect(g);g.connect(timerAudioContext.destination);
+        o.start(0);o.stop(timerAudioContext.currentTime+.015);
+        o.onended=function(){try{o.disconnect();g.disconnect();}catch(e){}};
+      }catch(e){}
+    }
+    function timerAlarmPlay() {
+      timerAlarmStop();
+      try {
+        if(!timerAudioContext)return;
+        if(timerAudioContext.state==='suspended' && timerAudioContext.resume)timerAudioContext.resume();
+        var c=timerAudioContext, start=c.currentTime+.05;
+        var osc=c.createOscillator(),gain=c.createGain();
+        osc.type='sine';osc.frequency.setValueAtTime(880,start);
+        gain.gain.setValueAtTime(0,start);
+        // 10 short pulses across 5 seconds, and automatic silence after exactly 5s.
+        for(var x=0;x<10;x++){
+          var a=start+x*.5;
+          gain.gain.setValueAtTime(0.20,a+.015);
+          gain.gain.setValueAtTime(0.20,a+.30);
+          gain.gain.setValueAtTime(0,a+.35);
+        }
+        gain.gain.setValueAtTime(0,start+5);
+        osc.connect(gain);gain.connect(c.destination);osc.start(start);osc.stop(start+5);
+        timerAlarmOscillator=osc;timerAlarmGain=gain;
+        osc.onended=function(){if(timerAlarmOscillator===osc){timerAlarmOscillator=null;timerAlarmGain=null;}try{osc.disconnect();gain.disconnect();}catch(e){}};
+      }catch(e){}
+    }
+    function renderTimer() {
+      setText('timer-display',formatTimer(timerRemaining));
+      setText('timer-duration',timerMinutes+' min');
+      var start=el('timer-start'),minus=el('timer-minus'),plus=el('timer-plus');
+      start.textContent=timerRunning?'Ⅱ Pause':timerRemaining===0?'▶ Again':timerLastState==='paused'?'▶ Resume':'▶ Start';
+      minus.disabled=timerRunning;plus.disabled=timerRunning;
+      el('timer-card').className='card timer-card'+(timerLastState==='finished'?' finished':'');
+      if(timerLastState==='finished')setText('timer-status','✓ Done! Take out the eggs');
+      else if(timerRunning)setText('timer-status','Counting down…');
+      else if(timerLastState==='paused')setText('timer-status','Paused · tap Resume');
+      else setText('timer-status','Ready · 5-second alarm');
+    }
+    function timerTick() {
+      if(!timerRunning)return;
+      var rem=Math.max(0,(timerDeadline-Date.now())/1000);
+      var whole=Math.ceil(rem);
+      if(whole!==timerRemaining){timerRemaining=whole;renderTimer();}
+      if(rem<=0){
+        timerRunning=false;timerRemaining=0;timerLastState='finished';renderTimer();timerAlarmPlay();
+      }
+    }
+    el('timer-start').onclick=function(){
+      if(timerRunning){timerRemaining=Math.max(0,Math.ceil((timerDeadline-Date.now())/1000));timerRunning=false;timerLastState='paused';}
+      else {
+        timerAlarmStop();
+        if(timerRemaining<=0)timerRemaining=timerMinutes*60;
+        timerAudioUnlock();timerDeadline=Date.now()+timerRemaining*1000;
+        timerRunning=true;timerLastState='running';
+      }
+      renderTimer();
+    };
+    el('timer-reset').onclick=function(){
+      timerAlarmStop();timerRunning=false;timerRemaining=timerMinutes*60;timerLastState='ready';renderTimer();
+    };
+    function adjustTimer(by) {
+      if(timerRunning)return;
+      timerAlarmStop();timerMinutes=Math.max(1,Math.min(180,timerMinutes+by));
+      timerRemaining=timerMinutes*60;timerLastState='ready';renderTimer();
+    }
+    el('timer-minus').onclick=function(){adjustTimer(-1);};
+    el('timer-plus').onclick=function(){adjustTimer(1);};
+    renderTimer();renderWords();setInterval(timerTick,250);setInterval(renderWords,60000);
+
     if(!Array.isArray(manual))manual=[];
     if(importedText && !isPreview){imported=parseICS(importedText);}
     if(isPreview)previewWeather();
