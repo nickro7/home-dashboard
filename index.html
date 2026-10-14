@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Homeboard">
   <meta name="theme-color" content="#0c1422">
-  <title>Homeboard V3 · Aarhus & Brazil</title>
+  <title>Homeboard V4 · Aarhus & Brazil</title>
   <style>
     :root { --bg:#0b1321; --surface:#142136; --surface2:#182940; --edge:#273953; --text:#f4f5f7; --muted:#94a6be; --faint:#6b7e97; --teal:#7ddbc2; --amber:#f9ca89; --blue:#83bafb; }
     * { box-sizing:border-box; }
@@ -312,6 +312,58 @@
       .home-details .detail-value { font-size:16px; }
       .home-details .detail-foot,.brazil-mini-desc { font-size:9px; }
     }
+
+    .station-website { width:38px; display:flex; align-items:center; justify-content:center; background:#20364b; border:1px solid #334963; border-left:0; color:#a7ecd8; text-decoration:none; border-radius:0 11px 11px 0; font-size:19px; flex-shrink:0; }
+    /* V4 — home shopping list and dedicated calendar */
+    .grocery { height:100%; padding:19px 21px 12px; display:flex; flex-direction:column; min-height:0; }
+    .grocery-top { display:flex; justify-content:space-between; align-items:center; }
+    .grocery-heading { font-weight:730; font-size:24px; letter-spacing:-.025em; margin-top:8px; }
+    .grocery-bag { font-size:20px; }
+    .grocery-pill { border:1px solid #2e635c; color:#89e4ce; background:#203c44; border-radius:17px; padding:7px 10px; font-size:11px; font-weight:700; white-space:nowrap; }
+    .grocery-form { display:flex; margin-top:18px; }
+    .grocery-form input { min-width:0; flex:1; padding:12px 12px; background:#0e1d30; color:#fff; border:1px solid #365067; border-radius:11px 0 0 11px; outline:none; font-size:14px; }
+    .grocery-form input:focus { border-color:#7ddbc2; }
+    .grocery-form button { min-width:74px; border:0; border-radius:0 11px 11px 0; background:#80dbc2; color:#102b30; font-weight:750; font-size:13px; }
+    .grocery-quick-label { color:#8ba2b9; font-size:10px; font-weight:750; margin-top:19px; letter-spacing:.11em; }
+    .grocery-quick { display:flex; flex-wrap:wrap; margin-top:8px; }
+    .grocery-quick button { border:1px solid #365169; border-radius:22px; background:#1d3248; color:#c4d5e5; padding:8px 11px; font-size:11px; margin:0 5px 6px 0; }
+    .grocery-list-title { display:flex; align-items:center; justify-content:space-between; padding:15px 0 10px; border-bottom:1px solid #2f4358; margin-top:5px; }
+    .grocery-list-title strong { font-size:10px; color:#9cafc3; letter-spacing:.12em; }
+    .grocery-list-title span { color:#8da3b9; font-size:11px; }
+    .grocery-items { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; min-height:0; padding-top:8px; }
+    .grocery-row { display:flex; align-items:center; border-bottom:1px solid #24394f; min-height:53px; }
+    .grocery-toggle { background:transparent; color:#94e7d0; border:0; width:46px; height:46px; font-size:23px; text-align:left; flex-shrink:0; }
+    .grocery-name { flex:1; min-width:0; font-size:14px; color:#edf3f8; overflow:hidden; text-overflow:ellipsis; padding-right:5px; }
+    .grocery-row.done .grocery-name { color:#72879b; text-decoration:line-through; }
+    .grocery-remove { border:0; background:transparent; color:#72889f; font-size:22px; width:40px; height:46px; }
+    .grocery-remove:active { color:#ffb7b7; }
+    .grocery-empty { text-align:center; padding:43px 20px; color:#9ab0c6; font-size:13px; }
+    .grocery-empty-icon { font-size:36px; display:block; margin-bottom:12px; }
+    .grocery-empty strong { display:block; color:#e3edf4; margin-bottom:7px; font-size:15px; }
+    .grocery-footer { border-top:1px solid #2a3f55; display:flex; align-items:center; justify-content:space-between; padding-top:11px; margin-top:9px; }
+    .grocery-footer span { font-size:10px; color:#7f96ae; }
+    .grocery-footer button { background:#243d4c; border:1px solid #35586b; color:#addacc; border-radius:9px; font-size:11px; padding:8px 10px; }
+    .grocery-footer button:disabled { opacity:.35; }
+    .calendar-screen { padding:0 12px 8px; max-width:900px; margin:0 auto; display:flex; flex-direction:column; }
+    .calendar-view-title { display:flex; align-items:center; justify-content:space-between; padding:9px 5px 15px; }
+    .calendar-page-heading { font-size:24px; font-weight:750; letter-spacing:-.02em; }
+    .calendar-page-heading span { color:#83d7c2; font-size:17px; }
+    .calendar-page-card { flex:1; min-height:0; }
+    .calendar-page-card .calendar { padding:21px 27px; }
+    .calendar-page-card .agenda-list { min-height:180px; }
+    .calendar-page-card .week-strip { margin-top:16px; }
+    @media (max-width:850px) and (orientation:portrait) {
+      .calendar-screen { height:auto; min-height:620px; } .calendar-page-card { min-height:550px; }
+      .grocery { min-height:450px; } .right { height:auto; min-height:450px; }
+      .grocery-items { min-height:120px; }
+    }
+    @media (max-height:700px) and (orientation:landscape) {
+      .grocery { padding:12px 16px 9px; }.grocery-heading { font-size:20px; margin-top:5px; }
+      .grocery-form { margin-top:10px; }.grocery-form input { padding:9px 10px; }
+      .grocery-quick-label { margin-top:10px; }.grocery-list-title { padding:9px 0; }
+      .grocery-row { min-height:45px; }.grocery-toggle,.grocery-remove { height:43px; }
+      .calendar-view-title { padding:3px 5px 9px; }
+    }
   </style>
 </head>
 <body>
@@ -323,6 +375,7 @@
       </div>
       <nav class="nav-tabs" aria-label="Dashboard sections">
         <button class="nav-tab active" data-view="home">⌂ Home</button>
+        <button class="nav-tab" data-view="calendar">▦ Calendar</button>
         <button class="nav-tab" data-view="music">♫ Music</button>
       </nav>
       <div class="header-right">
@@ -378,6 +431,32 @@
       </div>
 
       <div class="right">
+        <section class="card grocery" aria-label="Grocery shopping list">
+          <div class="grocery-top">
+            <div><div class="section-eyebrow">Household</div><div class="grocery-heading">Shopping list <span class="grocery-bag">🛒</span></div></div>
+            <div class="grocery-pill" id="grocery-count">0 to buy</div>
+          </div>
+          <form id="grocery-form" class="grocery-form" autocomplete="off">
+            <input id="grocery-input" type="text" maxlength="90" placeholder="Add milk, bread, fruit…" aria-label="Add an item to the grocery list" required>
+            <button type="submit" aria-label="Add grocery item">+ Add</button>
+          </form>
+          <div class="grocery-quick-label">QUICK ADD</div>
+          <div class="grocery-quick" id="grocery-quick">
+            <button type="button" data-quick="Milk">+ Milk</button><button type="button" data-quick="Bread">+ Bread</button><button type="button" data-quick="Eggs">+ Eggs</button><button type="button" data-quick="Fruit">+ Fruit</button>
+          </div>
+          <div class="grocery-list-title"><strong>YOUR LIST</strong><span id="grocery-progress">Ready for your first item</span></div>
+          <div class="grocery-items" id="grocery-items" aria-live="polite"></div>
+          <div class="grocery-footer">
+            <span id="grocery-save-state">Saved on this iPad</span>
+            <button id="grocery-clear" type="button">Clear checked ✓</button>
+          </div>
+        </section>
+      </div>
+    </main></div>
+
+    <div class="view" id="view-calendar"><main class="screen calendar-screen">
+      <div class="calendar-view-title"><div class="section-eyebrow">All your appointments</div><div class="calendar-page-heading">Your schedule <span>↗</span></div></div>
+      <div class="calendar-page-card">
         <section class="card calendar">
           <div class="calendar-head">
             <div class="card-title">Calendar</div>
@@ -394,7 +473,7 @@
 
     <div class="view" id="view-music"><main class="screen music-layout">
       <section class="card music-feature">
-        <div><div class="section-eyebrow">♫ Homeboard audio</div><div class="music-bigtitle" style="margin-top:16px">Music for your space.</div><div class="music-subtitle">Rock, blues, jazz, Brazilian music and more. Choose a genre or save favourite radio stations for quick access.</div></div>
+        <div><div class="section-eyebrow">♫ Homeboard audio</div><div class="music-bigtitle" style="margin-top:16px">Music for your space.</div><div class="music-subtitle">Rock, blues, jazz, radio from Brazil and around the world. Search by station or save favourites for quick access.</div></div>
         <div class="music-disc" aria-hidden="true"></div>
         <div class="music-subtitle">Tap any station to listen. Safari requires you to start audio manually; it will never autoplay when opening the dashboard.</div>
       </section>
@@ -789,6 +868,118 @@
     var radioStations = [
     {
         "genre": "Rock",
+        "name": "Q107 · Toronto",
+        "detail": "107.1 FM · Canadian classic rock",
+        "url": "https://live.leanstream.co/CILQFM-MP3",
+        "website": "https://q107.com/player/?stationletterprefix=q"
+    },
+    {
+        "genre": "Brazil",
+        "name": "Atlântida FM · Porto Alegre",
+        "detail": "94.3 FM · pop-rock and RS favourites · HLS",
+        "url": "https://liverdatlpoa.rbsdirect.com.br/primary/atl_poa.sdp/playlist.m3u8",
+        "website": "https://atl.clicrbs.com.br/"
+    },
+    {
+        "genre": "Brazil",
+        "name": "89 FM · A Rádio Rock",
+        "detail": "São Paulo · rock brasileiro e internacional",
+        "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/RADIO_89FM_ADP.aac?dist=site-89fm",
+        "website": "https://www.radiorock.com.br/"
+    },
+    {
+        "genre": "Brazil",
+        "name": "Kiss FM · São Paulo",
+        "detail": "92.5 FM · classic rock",
+        "url": "https://23243.live.streamtheworld.com/RADIO_KISSFM_ADP.aac",
+        "website": "https://kissfm.com.br/"
+    },
+    {
+        "genre": "Rock",
+        "name": "Digitalis · SomaFM",
+        "detail": "Indie electronic / alternative rock",
+        "url": "https://ice5.somafm.com/digitalis-128-mp3"
+    },
+    {
+        "genre": "Rock",
+        "name": "n5MD · SomaFM",
+        "detail": "Post-rock, ambient and experimental",
+        "url": "https://ice5.somafm.com/n5md-128-mp3"
+    },
+    {
+        "genre": "Jazz",
+        "name": "The In-Sound · SomaFM",
+        "detail": "60s / 70s groovy jazz & vintage pop",
+        "url": "https://ice5.somafm.com/insound-128-mp3"
+    },
+    {
+        "genre": "Jazz",
+        "name": "SomaFM Specials",
+        "detail": "Changing eclectic mixes and jazz specials",
+        "url": "https://ice5.somafm.com/specials-128-mp3"
+    },
+    {
+        "genre": "Chill",
+        "name": "Deep Space One",
+        "detail": "Slow cosmic ambient",
+        "url": "https://ice5.somafm.com/deepspaceone-128-mp3"
+    },
+    {
+        "genre": "Chill",
+        "name": "Fluid · SomaFM",
+        "detail": "Instrumental hip hop & future soul",
+        "url": "https://ice5.somafm.com/fluid-128-mp3"
+    },
+    {
+        "genre": "Chill",
+        "name": "DEF CON Radio",
+        "detail": "Music for hacking and chilled breaks",
+        "url": "https://ice5.somafm.com/defcon-128-mp3"
+    },
+    {
+        "genre": "Chill",
+        "name": "Cliqhop IDM · SomaFM",
+        "detail": "Intelligent dance and electronic beats",
+        "url": "https://ice5.somafm.com/cliqhop-128-mp3"
+    },
+    {
+        "genre": "Chill",
+        "name": "Mission Control · SomaFM",
+        "detail": "Space-exploration ambience",
+        "url": "https://ice5.somafm.com/missioncontrol-128-mp3"
+    },
+    {
+        "genre": "Chill",
+        "name": "The Trip · SomaFM",
+        "detail": "Progressive house & trance",
+        "url": "https://ice5.somafm.com/thetrip-128-mp3"
+    },
+    {
+        "genre": "Chill",
+        "name": "The Dark Zone · SomaFM",
+        "detail": "Deep dark ambient textures",
+        "url": "https://ice5.somafm.com/darkzone-128-mp3"
+    },
+    {
+        "genre": "Chill",
+        "name": "Vaporwaves · SomaFM",
+        "detail": "Dreamy retro electronic",
+        "url": "https://ice5.somafm.com/vaporwaves-128-mp3"
+    },
+    {
+        "genre": "Chill",
+        "name": "ThistleRadio · SomaFM",
+        "detail": "Celtic music and roots",
+        "url": "https://ice5.somafm.com/thistle-128-mp3"
+    },
+    {
+        "genre": "Chill",
+        "name": "Synphaera Radio · SomaFM",
+        "detail": "Modern ambient and space music",
+        "url": "https://ice5.somafm.com/synphaera-128-mp3"
+    },
+    {
+        "genre": "Rock",
         "name": "Radio Paradise",
         "detail": "Eclectic rock & more",
         "url": "https://stream-uk1.radioparadise.com/mp3-128"
@@ -956,6 +1147,49 @@
         "url": "https://ice5.somafm.com/poptron-128-mp3"
     }
 ];
+
+    // Grocery list is saved only in this browser (no shared login, no cloud upload).
+    var groceries=readStore('homeboard-groceries-v4',[]);
+    if(!Array.isArray(groceries))groceries=[];
+    groceries=groceries.filter(function(x){return x&&typeof x.name==='string'&&typeof x.id==='number';});
+    function persistGroceries(){
+      if(!saveStore('homeboard-groceries-v4',groceries))setText('grocery-save-state','Storage unavailable — changes may be lost');
+      else setText('grocery-save-state','Saved on this iPad');
+    }
+    function addGrocery(value){
+      var name=String(value||'').replace(/\s+/g,' ').trim();
+      if(!name)return;
+      if(name.length>90)name=name.slice(0,90);
+      var lower=name.toLowerCase(),existing=-1;
+      for(var i=0;i<groceries.length;i++)if(groceries[i].name.toLowerCase()===lower){existing=i;break;}
+      if(existing>=0){groceries[existing].done=false;}
+      else groceries.unshift({id:Date.now()+Math.floor(Math.random()*1000),name:name,done:false});
+      persistGroceries();renderGroceries();el('grocery-input').value='';
+    }
+    function renderGroceries(){
+      var box=el('grocery-items');box.innerHTML='';
+      var remaining=0,completed=0,sorted=groceries.slice();
+      for(var i=0;i<groceries.length;i++){if(groceries[i].done)completed++;else remaining++;}
+      sorted.sort(function(a,b){if(a.done===b.done)return 0;return a.done?1:-1;});
+      setText('grocery-count',remaining+' to buy');
+      setText('grocery-progress',completed?completed+' checked · '+groceries.length+' total':groceries.length+' items');
+      el('grocery-clear').disabled=completed===0;
+      if(!sorted.length){box.innerHTML='<div class="grocery-empty"><span class="grocery-empty-icon">🧺</span><strong>All stocked up?</strong>Tap quick add or type what you need next.</div>';return;}
+      for(var j=0;j<sorted.length;j++){
+        var item=sorted[j],row=document.createElement('div');row.className='grocery-row'+(item.done?' done':'');
+        var check=document.createElement('button');check.type='button';check.className='grocery-toggle';check.textContent=item.done?'☑':'□';check.setAttribute('aria-label',(item.done?'Mark as needed: ':'Mark as bought: ')+item.name);check.setAttribute('data-id',''+item.id);
+        check.onclick=function(){var id=+this.getAttribute('data-id');for(var k=0;k<groceries.length;k++){if(groceries[k].id===id){groceries[k].done=!groceries[k].done;break;}}persistGroceries();renderGroceries();};
+        var label=document.createElement('span');label.className='grocery-name';label.textContent=item.name;
+        var remove=document.createElement('button');remove.type='button';remove.className='grocery-remove';remove.textContent='×';remove.setAttribute('aria-label','Remove '+item.name);remove.setAttribute('data-id',''+item.id);
+        remove.onclick=function(){var id=+this.getAttribute('data-id'),next=[];for(var k=0;k<groceries.length;k++)if(groceries[k].id!==id)next.push(groceries[k]);groceries=next;persistGroceries();renderGroceries();};
+        row.appendChild(check);row.appendChild(label);row.appendChild(remove);box.appendChild(row);
+      }
+    }
+    el('grocery-form').onsubmit=function(e){e.preventDefault();addGrocery(el('grocery-input').value);};
+    var shortcuts=document.querySelectorAll('[data-quick]');
+    for(var sh=0;sh<shortcuts.length;sh++)shortcuts[sh].onclick=function(){addGrocery(this.getAttribute('data-quick'));};
+    el('grocery-clear').onclick=function(){var keep=[];for(var g=0;g<groceries.length;g++)if(!groceries[g].done)keep.push(groceries[g]);groceries=keep;persistGroceries();renderGroceries();};
+
     var selectedGenre = 'All';
     var stationFavorites = readStore('homeboard-radio-favorites',[]);
     if(!Array.isArray(stationFavorites))stationFavorites=[];
@@ -982,7 +1216,9 @@
         star.onclick=function(){var u=this.getAttribute('data-url'),ix=stationFavorites.indexOf(u);
           if(ix<0)stationFavorites.push(u);else stationFavorites.splice(ix,1);
           saveStore('homeboard-radio-favorites',stationFavorites);renderStations();};
-        row.appendChild(star);box.appendChild(row);
+        row.appendChild(star);
+        if(entry.website){var link=document.createElement('a');link.href=entry.website;link.target='_blank';link.rel='noopener noreferrer';link.className='station-website';link.textContent='↗';link.title='Open official station player';link.setAttribute('aria-label','Open '+entry.name+' official player');row.appendChild(link);}
+        box.appendChild(row);
       }
       setText('station-count','· '+count+' / '+radioStations.length);
       if(count===0){var msg=document.createElement('div');msg.className='station-empty';msg.textContent='No matching stations. Try another genre or search.';box.appendChild(msg);}
@@ -1018,7 +1254,7 @@
       var t=box.querySelectorAll('.track');for(var k=0;k<t.length;k++)t[k].onclick=function(){var n=parseInt(this.getAttribute('data-track'),10);audioStart(audioTracks[n].url,audioTracks[n].name,'file',n);};
     }
     function changeTrack(step) {
-      if(audioKind!=='file'||!audioTracks.length){selectView('music');return;}
+      if(audioKind!=='file'||!audioTracks.length){var index=-1;for(var n=0;n<radioStations.length;n++)if(radioStations[n].url===audioSource){index=n;break;}var next=(index+step+radioStations.length)%radioStations.length;audioStart(radioStations[next].url,radioStations[next].name,'radio');return;}
       var idx=(currentTrack+step+audioTracks.length)%audioTracks.length;
       audioStart(audioTracks[idx].url,audioTracks[idx].name,'file',idx);
     }
@@ -1078,7 +1314,7 @@
     if(!Array.isArray(manual))manual=[];
     if(importedText && !isPreview){imported=parseICS(importedText);}
     if(isPreview)previewWeather();
-    renderStations();applySettings();updateClock();displayCalendar();loadWeather();loadBrazilWeather();refreshCalendar();
+    renderStations();renderGroceries();applySettings();updateClock();displayCalendar();loadWeather();loadBrazilWeather();refreshCalendar();
     var now=new Date();el('event-day').value=localDate(now);
     setInterval(updateClock,15000);
     setInterval(displayCalendar,900000);
