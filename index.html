@@ -6,8 +6,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Homeboard">
-  <meta name="theme-color" content="#0c1422">
-  <title>Homeboard V4 · Aarhus & Brazil</title>
+  <meta name="theme-color" content="#171d19">
+  <title>Homeboard V5 · Kitchen Edition</title>
   <style>
     :root { --bg:#0b1321; --surface:#142136; --surface2:#182940; --edge:#273953; --text:#f4f5f7; --muted:#94a6be; --faint:#6b7e97; --teal:#7ddbc2; --amber:#f9ca89; --blue:#83bafb; }
     * { box-sizing:border-box; }
@@ -364,6 +364,226 @@
       .grocery-row { min-height:45px; }.grocery-toggle,.grocery-remove { height:43px; }
       .calendar-view-title { padding:3px 5px 9px; }
     }
+
+    /* ─────────────────────────────────────────────────────────────
+       HOMEBOARD V5 — Kitchen edition, iPad Air 1 / iOS 12
+       Countertop sage · charcoal appliance · ivory tile · pale birch
+       No flex-gap or modern container queries (Safari 12 support).
+       ───────────────────────────────────────────────────────────── */
+    :root {
+      --bg:#171c19; --surface:#252c27; --surface2:#303a32; --edge:#465549;
+      --text:#f2f0e6; --muted:#c1c9b9; --faint:#9ca899;
+      --teal:#b6ceb0; --amber:#d8bd90; --blue:#abc6b7;
+    }
+    html { background:#171c19; }
+    body { color:var(--text); background:radial-gradient(ellipse at 7% 0%,#344139 0%,#1b231e 46%,#151a17 100%); }
+    .app { max-width:1400px; padding:10px 18px 10px; }
+    .topbar { height:53px; margin-bottom:10px; }
+    .brand-name { color:#f3f0e3; font-size:17px; letter-spacing:.075em; }
+    .brand-sub { color:#a8b4a4; }
+    .brand-icon { background:#3d4c3f; color:#d0dfc6; border:1px solid #566b56; }
+    .nav-tabs { background:#212a23; border:1px solid #4c5b4e; border-radius:14px; margin:0 10px; padding:4px; }
+    .nav-tab { color:#bec8b9; padding:11px 23px; font-size:15px; border-radius:10px; }
+    .nav-tab.active { background:#637d65; color:#fbf9ec; }
+    .nav-tab:active { background:#4a634e; }
+    .icon-button { background:#303c33; border-color:#5a6d5c; color:#e9eee2; width:44px; height:44px; }
+    .top-status { color:#bfceb9; font-size:13px; }
+    .status-dot { background:#b7d9a4; box-shadow:0 0 8px rgba(183,217,164,.3); }
+    .card { background:#252d27; border:1px solid #435246; border-radius:17px; }
+    .section-eyebrow { color:#b9c8b5; }
+    .hero { background:linear-gradient(120deg,#3b5141 0%,#304238 59%,#2b3b32 100%); }
+    .hero:before { background:radial-gradient(circle,rgba(199,212,173,.17) 0%,rgba(199,212,173,0) 68%); }
+    .hero-location { background:rgba(19,28,23,.42); color:#e2e6d5; font-size:13px; }
+    #greeting { color:#e4e4d7; font-size:15px; }
+    .today { color:#e0e4d5; }
+    .outside-label { color:#c5d4bd; }
+    .outside-desc { color:#dcebbf; }
+    .forecast-day { border-color:#3f5143; }
+    .forecast-day-name { color:#e2e7d9; }
+    .forecast-rain,.hour-pop { color:#a6c6c4; }
+    .card-note,.detail-foot { color:#b1c0b1; }
+    .hour-cell { border-color:#4a594c; }
+    .hour-cell:first-child { border-color:#4a594c; }
+    .hour-cell.now { background:#364b3b; }
+    .hour-time { color:#e0e8dc; }
+    .hourly-arrow { background:#36473a; border-color:#5c715d; color:#f2f3e8; width:36px; height:34px; font-size:21px; }
+    .brazil-mini { background:linear-gradient(115deg,#405444 0%,#2d4236 100%); border-color:#5e7262; }
+    .brazil-mini-heading,.brazil-mini-desc { color:#e1e9d8; }
+    .brazil-mini-flag { color:#b7c9b7; }
+    .home-details .sensor-soon { color:#e2c9a3; }
+    .detail-top { color:#d3dcca; }
+    .detail-value { color:#f0f2e8; }
+    .sun-times .divider-v { background:#64735f; }
+    .grocery { background:#252e27; }
+    .grocery-heading { color:#f6f1e6; }
+    .grocery-pill { border-color:#748b6c; color:#dfedd2; background:#3c5440; font-size:12px; }
+    .grocery-form input { background:#1c241e; border-color:#536651; color:#f4f0e9; font-size:16px; }
+    .grocery-form input:focus { border-color:#b6ceb0; }
+    .grocery-form button { background:#bdd2b2; color:#213027; font-size:15px; }
+    .grocery-quick-label { color:#c2cdba; }
+    .grocery-quick button { background:#38473b; border-color:#5f755f; color:#ecf0e5; font-size:13px; }
+    .grocery-list-title { border-color:#47564b; }
+    .grocery-list-title strong,.grocery-list-title span { color:#bac6b4; }
+    .grocery-row { border-color:#405145; }
+    .grocery-toggle { color:#c3daba; }
+    .grocery-name { color:#f2efe6; }
+    .grocery-row.done .grocery-name { color:#adb9a9; }
+    .grocery-remove { color:#b6bfb0; }
+    .grocery-footer { border-color:#4a5d4c; }
+    .grocery-footer span { color:#b6c2b1; }
+    .grocery-footer button { background:#39493b; color:#e0ebd5; border-color:#60765b; }
+    .calendar { background:#252e27; }
+    .calendar-page-heading { color:#f3efe5; }
+    .calendar-page-heading span,.calendar-link { color:#c5ddad; }
+    .small-button,.secondary { background:#3a4a3d; border-color:#71816a; color:#e5ede1; }
+    .week-day.active { background:#4b664e; }
+    .week-day.active .week-letter { color:#d7e7c7; }
+    .agenda-head,.calendar-footer { border-color:#4b594b; }
+    .agenda-line { background:#b6cfaa; }
+    .agenda-head strong,.agenda-time { color:#c4d2be; }
+    .empty-state { border-color:#627362; }
+    .empty-state strong { color:#efece2; }
+    .overlay { background:rgba(12,19,14,.83); }
+    .modal { background:#253129; border:1px solid #657866; }
+    .tabs { background:#18221b; }
+    .tab { color:#c0cbbc; }
+    .tab.active { background:#506951; }
+    .field label { color:#e0e6db; }
+    .field input,.music-inputline input { background:#1b261f; border-color:#5f745f; }
+    .primary { background:#c7d9b8; color:#243326; }
+    .hint,.modal-copy { color:#becbb9; }
+    .message { background:#3a533f; color:#e3f0dd; }
+    .file-label,.music-filebtn { color:#edf3e2; border-color:#6b8168; background:#3d5543; }
+    .player-dock { background:#27362c; border-color:#58705b; height:62px; border-radius:15px; }
+    .player-art { background:#56765b; color:#f4fae8; width:43px; height:43px; line-height:43px; font-size:25px; }
+    .player-title { color:#f0efe3; font-size:15px; }
+    .player-status { color:#c1cdbb; font-size:11px; }
+    .player-button { background:#415746; border-color:#718775; font-size:19px; min-width:46px; min-height:43px; color:#faf8ee; }
+    .player-button.primary-play { background:#c0d5ae; border-color:#c0d5ae; color:#1e3123; }
+    .player-open { font-size:12px; min-width:80px; }
+    /* One single scrollable station list; controls stay visible at the top. */
+    .music-layout { display:flex; flex-direction:column; min-height:0; }
+    .music-feature { flex:0 0 76px; padding:9px 22px; background:linear-gradient(105deg,#3d5542 0%,#2e4034 100%); margin-bottom:11px; display:block; }
+    .music-heading { display:flex; align-items:center; justify-content:space-between; height:100%; }
+    .music-bigtitle { font-size:25px; font-weight:730; line-height:1.12; margin-top:4px; color:#faf5e9; }
+    .music-head-note { font-size:13px; color:#d7e0ce; text-align:right; line-height:1.55; }
+    .music-listcard { flex:1 1 0; min-height:0; padding:12px 18px 10px; overflow:hidden; display:flex; flex-direction:column; }
+    .music-block-label { color:#d1ddca; font-size:12px; margin-bottom:8px; flex-shrink:0; }
+    #station-count { color:#c3d8b3; font-size:12px; }
+    .station-filters { display:flex; flex-wrap:nowrap; overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch; flex:0 0 auto; min-height:44px; margin:0 0 8px; scrollbar-width:none; }
+    .station-filters::-webkit-scrollbar { display:none; height:0; }
+    .filter-chip { display:inline-block; flex:0 0 auto; font-size:13px; font-weight:650; padding:9px 14px; margin:0 7px 0 0; background:#303f35; color:#e0e8dc; border:1px solid #5a6f5c; border-radius:20px; white-space:nowrap; }
+    .filter-chip.active { background:#779276; border-color:#aac3a5; color:#fdfbef; }
+    .station-search { display:block; flex:0 0 auto; height:43px; min-height:43px; font-size:15px; padding:10px 14px; margin:0 0 9px; background:#1c2720; border:1px solid #70836d; color:#f6f2e9; border-radius:12px; -webkit-appearance:none; appearance:none; }
+    .station-directory { display:block; flex:1 1 0; height:0; min-height:0; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; padding:2px 5px 4px 0; }
+    .station-row { min-height:59px; margin-bottom:7px; display:flex; }
+    .station { min-height:59px; border-color:#586b58; background:#334337; padding:10px 15px; margin:0; }
+    .station.active { border-color:#bed2ac; background:#4c664e; }
+    .station strong { color:#f1f2e5; font-size:16px; line-height:1.2; }
+    .station small { color:#c3d0bd; font-size:12px; line-height:1.25; }
+    .favorite-station { width:49px; border-color:#586b58; background:#334337; color:#e0dfca; font-size:26px; }
+    .favorite-station.is-favorite { color:#eacb95; }
+    .station-website { width:46px; border-color:#586b58; background:#405444; color:#e8f5dc; font-size:22px; }
+    .station-empty { color:#d6dfce; font-size:14px; }
+    .music-extra { flex:0 0 auto; background:#303d32; border:1px solid #526b55; border-radius:10px; margin-top:8px; }
+    .music-extra summary { cursor:pointer; color:#d5e3cb; font-size:13px; padding:9px 12px; font-weight:650; }
+    .music-extra-body { padding:12px; border-top:1px solid #546d57; max-height:200px; overflow-y:auto; }
+    .music-extra .track-list { flex:none; max-height:85px; overflow:auto; margin-top:5px; }
+    .music-inputline button { background:#58735a; border-color:#708c70; color:#f4f5e9; }
+    .track { color:#e1ebdc; border-color:#435c47; }
+    .track.active { color:#edf6e1; background:#425d43; }
+    /* 1024x768 is the iPad Air 1 landscape CSS viewport. */
+    @media (min-width:851px) and (orientation:landscape) {
+      .dashboard,.screen { height:calc(100vh - 154px); min-height:0; }
+      .dashboard { grid-template-columns:1.22fr .78fr; grid-gap:11px; }
+      .left { grid-template-rows:1.42fr 1.04fr 1.20fr .80fr; grid-gap:11px; min-height:0; }
+      .hero { padding:18px 21px; }
+      .hero-bottom { left:21px; right:21px; bottom:18px; }
+      .time { font-size:80px; }
+      .today { font-size:15px; margin-top:6px; }
+      .outside-temp { font-size:40px; }
+      .outside-desc { font-size:13px; }
+      .forecast { padding:13px 16px 9px; }
+      .forecast-grid { margin-top:10px; }
+      .forecast-day-name { font-size:13px; }
+      .forecast-icon { font-size:27px; }
+      .forecast-temps { font-size:15px; }
+      .forecast-rain { font-size:11px; }
+      .card-title { font-size:17px; }
+      .hourly-card { padding:13px 15px 10px; }
+      .hour-cell { flex-basis:75px; min-width:75px; }
+      .hour-time { font-size:12px; }
+      .hour-icon { font-size:24px; }
+      .hour-temp { font-size:18px; }
+      .home-details { grid-template-columns:1fr 1.35fr .92fr; grid-gap:9px; }
+      .home-details .detail-card { padding:11px 10px; }
+      .home-details .detail-top { font-size:10px; }
+      .home-details .detail-value { font-size:21px; }
+      .home-details .detail-foot { font-size:10px; }
+      .brazil-mini { padding:9px 10px; }
+      .brazil-mini-heading { font-size:11px; }
+      .brazil-mini-time { font-size:28px; }
+      .brazil-mini-weather { font-size:20px; }
+      .brazil-mini-desc { font-size:11px; }
+      .grocery { padding:18px 18px 12px; }
+      .grocery-heading { font-size:27px; margin-top:5px; }
+      .grocery-form { margin-top:13px; }
+      .grocery-form input { padding:12px; }
+      .grocery-quick-label { margin-top:11px; }
+      .grocery-quick { display:flex; flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; margin-top:8px; scrollbar-width:none; }
+      .grocery-quick::-webkit-scrollbar { display:none; height:0; }
+      .grocery-quick button { flex:0 0 auto; padding:9px 12px; font-size:13px; margin:0 6px 0 0; white-space:nowrap; }
+      .grocery-list-title { padding:11px 0 8px; }
+      .grocery-row { min-height:48px; }
+      .grocery-name { font-size:17px; }
+      .grocery-toggle { width:48px; font-size:25px; }
+      .grocery-remove { width:40px; }
+      .grocery-footer span { font-size:11px; }
+      .calendar-screen { max-width:1000px; }
+      .calendar-page-heading { font-size:29px; }
+      .calendar-page-card .calendar { padding:20px 27px; }
+      .calendar-page-card .agenda-event-name { font-size:17px; }
+      .calendar-page-card .agenda-time { font-size:14px; }
+    }
+    @media (min-width:851px) and (orientation:landscape) and (max-height:720px) {
+      .dashboard,.screen { height:calc(100vh - 139px); min-height:0; }
+      .left { grid-template-rows:1.29fr 1fr 1.33fr .75fr; }
+      .hourly-card { padding:9px 13px 6px; }
+      .hourly-scroll { margin-top:5px; padding-bottom:0; }
+      .app { padding:6px 12px; }
+      .topbar { height:48px; margin-bottom:7px; }
+      .player-dock { height:56px; margin-top:6px; }
+      .music-feature { flex-basis:67px; padding:8px 15px; }
+      .music-bigtitle { font-size:23px; }
+      .music-listcard { padding:10px 14px 7px; }
+      .station-row,.station { min-height:52px; }
+      .grocery { padding:11px 13px 8px; }
+      .grocery-heading { font-size:23px; }
+      .grocery-row { min-height:43px; }
+      .grocery-toggle,.grocery-remove { height:42px; }
+      .grocery-quick-label { margin-top:6px; }
+      .grocery-quick { margin-top:4px; }
+      .grocery-list-title { margin-top:1px; padding:6px 0; }
+      .grocery-name { font-size:15px; }
+      .time { font-size:56px; }
+      .hero-bottom { bottom:11px; }
+      .outside-icon { font-size:21px; }
+      .outside-temp { font-size:29px; }
+      .outside-desc,.outside-label { font-size:10px; }
+      .forecast-grid { margin-top:5px; }
+      .forecast-icon { font-size:21px; }
+      .forecast-temps { font-size:13px; }
+      .forecast-rain { font-size:10px; }
+    }
+    @media (max-width:850px) and (orientation:portrait) {
+      .music-layout { display:block; height:auto; }
+      .music-feature { height:105px; min-height:105px; margin-bottom:12px; }
+      .music-listcard { height:570px; min-height:400px; }
+      .station-directory { height:auto; }
+      .nav-tab { padding:10px 12px; font-size:14px; }
+      .grocery-quick { overflow-x:auto; flex-wrap:nowrap; }
+      .grocery-quick button { flex:0 0 auto; }
+    }
   </style>
 </head>
 <body>
@@ -371,7 +591,7 @@
     <header class="topbar">
       <div class="brand">
         <div class="brand-icon">⌂</div>
-        <div><div class="brand-name">HOMEBOARD</div><div class="brand-sub">A little more home</div></div>
+        <div><div class="brand-name">HOMEBOARD</div><div class="brand-sub">Kitchen edition · V5</div></div>
       </div>
       <nav class="nav-tabs" aria-label="Dashboard sections">
         <button class="nav-tab active" data-view="home">⌂ Home</button>
@@ -437,12 +657,12 @@
             <div class="grocery-pill" id="grocery-count">0 to buy</div>
           </div>
           <form id="grocery-form" class="grocery-form" autocomplete="off">
-            <input id="grocery-input" type="text" maxlength="90" placeholder="Add milk, bread, fruit…" aria-label="Add an item to the grocery list" required>
+            <input id="grocery-input" type="text" maxlength="90" placeholder="What do we need?" aria-label="Add an item to the grocery list" required>
             <button type="submit" aria-label="Add grocery item">+ Add</button>
           </form>
           <div class="grocery-quick-label">QUICK ADD</div>
           <div class="grocery-quick" id="grocery-quick">
-            <button type="button" data-quick="Milk">+ Milk</button><button type="button" data-quick="Bread">+ Bread</button><button type="button" data-quick="Eggs">+ Eggs</button><button type="button" data-quick="Fruit">+ Fruit</button>
+            <button type="button" data-quick="Skyr / Yogurt">+ Skyr / Yogurt</button><button type="button" data-quick="Cheese">+ Cheese</button><button type="button" data-quick="Ham">+ Ham</button><button type="button" data-quick="Juice">+ Juice</button><button type="button" data-quick="Water">+ Water</button><button type="button" data-quick="Toilet Paper">+ Toilet Paper</button><button type="button" data-quick="Milk">+ Milk</button><button type="button" data-quick="Bread">+ Bread</button><button type="button" data-quick="Eggs">+ Eggs</button><button type="button" data-quick="Fruit">+ Fruit</button>
           </div>
           <div class="grocery-list-title"><strong>YOUR LIST</strong><span id="grocery-progress">Ready for your first item</span></div>
           <div class="grocery-items" id="grocery-items" aria-live="polite"></div>
@@ -473,9 +693,10 @@
 
     <div class="view" id="view-music"><main class="screen music-layout">
       <section class="card music-feature">
-        <div><div class="section-eyebrow">♫ Homeboard audio</div><div class="music-bigtitle" style="margin-top:16px">Music for your space.</div><div class="music-subtitle">Rock, blues, jazz, radio from Brazil and around the world. Search by station or save favourites for quick access.</div></div>
-        <div class="music-disc" aria-hidden="true"></div>
-        <div class="music-subtitle">Tap any station to listen. Safari requires you to start audio manually; it will never autoplay when opening the dashboard.</div>
+        <div class="music-heading">
+          <div><div class="section-eyebrow">♫ Your radio collection</div><div class="music-bigtitle">Music for the kitchen.</div></div>
+          <div class="music-head-note">Rock · Blues · Jazz · Brazil<br>Tap a station to listen</div>
+        </div>
       </section>
       <section class="card music-listcard">
         <div class="music-block-label">Internet radio · find your sound <span id="station-count"></span></div>
@@ -490,14 +711,17 @@
         </div>
         <input class="station-search" id="station-search" type="search" placeholder="Search stations or music styles…" aria-label="Search radio stations">
         <div class="station-directory" id="station-directory"><div class="music-help">Loading radio stations…</div></div>
-        <div class="music-split"></div>
-        <div class="music-block-label">Or your own audio</div>
-        <div><label class="music-filebtn">＋ Choose music files<input type="file" id="music-files" accept="audio/*,.mp3,.m4a,.aac,.wav" multiple></label></div>
-        <div class="track-list" id="music-tracks"><div class="music-help">Select MP3 or M4A files from the iPad Files app. Your files are not uploaded anywhere. Choose them again after reloading the page.</div></div>
-        <div class="music-split"></div>
-        <div class="music-block-label">Custom direct stream URL</div>
-        <div class="music-inputline"><input type="url" id="radio-url" placeholder="https://station.example/live.mp3" aria-label="Internet radio URL"><button id="play-custom">Play URL</button></div>
-        <div class="music-help">Use a direct HTTPS MP3/AAC stream, not a Spotify or Apple Music page link. Playback needs an internet connection and a tap to start.</div>
+        <details class="music-extra">
+          <summary>＋ Your music files or custom stream</summary>
+          <div class="music-extra-body">
+            <div class="music-block-label">Local music files</div>
+            <div><label class="music-filebtn">＋ Choose music files<input type="file" id="music-files" accept="audio/*,.mp3,.m4a,.aac,.wav" multiple></label></div>
+            <div class="track-list" id="music-tracks"><div class="music-help">Choose MP3 or M4A from Files. Files remain on your iPad and need reselecting after refresh.</div></div>
+            <div class="music-block-label" style="margin-top:13px">Custom HTTPS radio stream</div>
+            <div class="music-inputline"><input type="url" id="radio-url" placeholder="https://station.example/live.mp3" aria-label="Internet radio URL"><button id="play-custom">Play URL</button></div>
+            <div class="music-help">Direct MP3/AAC URLs work best. iOS may block some station formats.</div>
+          </div>
+        </details>
       </section>
     </main></div>
 
@@ -1152,6 +1376,18 @@
     var groceries=readStore('homeboard-groceries-v4',[]);
     if(!Array.isArray(groceries))groceries=[];
     groceries=groceries.filter(function(x){return x&&typeof x.name==='string'&&typeof x.id==='number';});
+    // One-time kitchen essentials for V5. Existing shopping entries are never replaced.
+    if(!readStore('homeboard-v5-essentials-added',false)){
+      var essentials=['Skyr / Yogurt','Cheese','Ham','Juice','Water','Toilet Paper'];
+      var essentialsChanged=false;
+      function groceryKey(n){return String(n||'').toLowerCase().replace(/\s+/g,'').replace(/[^a-z0-9/]/g,'');}
+      for(var ei=0;ei<essentials.length;ei++){
+        var found=false;
+        for(var ej=0;ej<groceries.length;ej++)if(groceryKey(groceries[ej].name)===groceryKey(essentials[ei])){found=true;break;}
+        if(!found){groceries.push({id:Date.now()+ei+2000,name:essentials[ei],done:false});essentialsChanged=true;}
+      }
+      if(!essentialsChanged || saveStore('homeboard-groceries-v4',groceries))saveStore('homeboard-v5-essentials-added',true);
+    }
     function persistGroceries(){
       if(!saveStore('homeboard-groceries-v4',groceries))setText('grocery-save-state','Storage unavailable — changes may be lost');
       else setText('grocery-save-state','Saved on this iPad');
