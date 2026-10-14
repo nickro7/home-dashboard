@@ -613,7 +613,7 @@
           </div>
           <div class="hero-bottom">
             <div><div class="time" id="clock">--:--</div><div class="today" id="date">Loading date…</div></div>
-            <div class="outside"><div class="outside-icon" id="current-icon">◌</div><div class="outside-temp" id="current-temp">--°</div><div class="outside-label">Outside now</div><div class="outside-desc" id="current-desc">Checking weather</div></div>
+            <div class="outside"><div class="outside-icon" id="current-icon">◌</div><div class="outside-temp" id="current-temp">--°</div><div class="outside-label" id="current-feels">Feels like --°</div><div class="outside-desc" id="current-desc">Checking weather</div></div>
           </div>
         </section>
 
@@ -880,6 +880,7 @@
       var desc=weatherInfo(cur.weather_code,cur.is_day);
       setText('current-icon',desc.icon);
       setText('current-temp',Math.round(cur.temperature_2m)+'°');
+      setText('current-feels','Feels like '+(typeof cur.apparent_temperature==='number'?Math.round(cur.apparent_temperature)+'°':'--°'));
       setText('current-desc',desc.name);
       setText('sunrise',timeFromISO(daily.sunrise[0])); setText('sunset',timeFromISO(daily.sunset[0]));
       renderDaily(daily,'forecast-grid');
@@ -900,11 +901,12 @@
       var current=data.current,desc=weatherInfo(current.weather_code,current.is_day);
       setText('brazil-icon',desc.icon);
       setText('brazil-temp',Math.round(current.temperature_2m)+'°');
-      setText('brazil-desc',desc.name+(cached?' · Saved':'') );
+      var feels=typeof current.apparent_temperature==='number'?' · Feels like '+Math.round(current.apparent_temperature)+'°':'';
+      setText('brazil-desc',desc.name+feels+(cached?' · Saved':''));
     }
     function brazilWeatherUrl() {
       return 'https://api.open-meteo.com/v1/forecast?latitude='+brazilPlace.lat+'&longitude='+brazilPlace.lon
-        +'&current=temperature_2m,weather_code,is_day&timezone='+encodeURIComponent(brazilPlace.tz);
+        +'&current=temperature_2m,weather_code,is_day,apparent_temperature&timezone='+encodeURIComponent(brazilPlace.tz);
     }
     function loadBrazilWeather() {
       if(isPreview)return;
@@ -1072,7 +1074,7 @@
       for(var i=0;i<5;i++){var d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+i);daily.time.push(localDate(d));daily.sunrise.push(localDate(d)+'T07:45');daily.sunset.push(localDate(d)+'T18:20');}
       var hourly={time:[],temperature_2m:[],precipitation_probability:[],weather_code:[],is_day:[]};
       for(var j=0;j<72;j++) {var hd=new Date(now.getFullYear(),now.getMonth(),now.getDate(),j);hourly.time.push(localDate(hd)+'T'+two(hd.getHours())+':00');hourly.temperature_2m.push(8+Math.round(5*Math.sin(j/5)));hourly.precipitation_probability.push((j*7)%70);hourly.weather_code.push(j%8<5?2:61);hourly.is_day.push(hd.getHours()>6&&hd.getHours()<20?1:0);}
-      updateWeather({current:{temperature_2m:12,weather_code:2,is_day:1,time:localDate(now)+'T'+shortTime(now)},daily:daily,hourly:hourly},false);
+      updateWeather({current:{temperature_2m:12,apparent_temperature:10,weather_code:2,is_day:1,time:localDate(now)+'T'+shortTime(now)},daily:daily,hourly:hourly},false);
       var brdaily={time:daily.time,weather_code:[1,2,0,61,3],temperature_2m_max:[27,29,28,25,24],temperature_2m_min:[17,18,19,17,16],sunrise:daily.sunrise,sunset:daily.sunset,precipitation_probability_max:[15,10,5,65,40]};
       var brTime=new Date(now.getTime()-3*3600000);var bhr={time:[],temperature_2m:[],precipitation_probability:[],weather_code:[],is_day:[]};
       for(var k=0;k<72;k++){var tt=new Date(Date.UTC(brTime.getUTCFullYear(),brTime.getUTCMonth(),brTime.getUTCDate(),k));bhr.time.push(tt.getUTCFullYear()+'-'+two(tt.getUTCMonth()+1)+'-'+two(tt.getUTCDate())+'T'+two(tt.getUTCHours())+':00');bhr.temperature_2m.push(23+Math.round(6*Math.sin(k/5)));bhr.precipitation_probability.push((k*5)%75);bhr.weather_code.push(k%9<7?1:61);bhr.is_day.push(tt.getUTCHours()>6&&tt.getUTCHours()<19?1:0);}
