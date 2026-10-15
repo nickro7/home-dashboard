@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="Homeboard">
   <meta name="theme-color" content="#171d19">
-  <title>Homeboard V6 · Kitchen Edition</title>
+  <title>Homeboard V6.1 · Kitchen Edition</title>
   <style>
     :root { --bg:#0b1321; --surface:#142136; --surface2:#182940; --edge:#273953; --text:#f4f5f7; --muted:#94a6be; --faint:#6b7e97; --teal:#7ddbc2; --amber:#f9ca89; --blue:#83bafb; }
     * { box-sizing:border-box; }
@@ -714,6 +714,49 @@
       .hourly-card .hour-pop { font-size:8px; }
       .hourly-card .hourly-scroll { margin-top:1px; }
     }
+
+    /* V6.1 — iPad corrections: readable rain chances and integrated Settings tab. */
+    .nav-tabs { align-items:center; }
+    .nav-settings {
+      border:0; border-left:1px solid #607460; margin:0 0 0 4px;
+      padding:10px 13px; border-radius:9px; background:transparent;
+      color:#e6ecdc; font-size:13px; font-weight:650; white-space:nowrap;
+      cursor:pointer; -webkit-tap-highlight-color:transparent;
+    }
+    .nav-settings:active { background:#526a54; }
+    .header-right .top-status { margin-right:0; }
+    .forecast .forecast-grid { min-height:0; grid-template-rows:minmax(0,1fr); }
+    .forecast .forecast-day {
+      min-height:0; padding:0 1px 3px; justify-content:space-between;
+    }
+    .forecast-main { display:flex; align-items:center; justify-content:center; min-height:0; width:100%; }
+    .forecast-main .forecast-icon { font-size:19px; line-height:1.12; margin-right:5px; flex-shrink:0; }
+    .forecast-main .forecast-temps { font-size:13px; line-height:1.12; font-weight:680; white-space:nowrap; }
+    .forecast .forecast-rain {
+      display:block; flex:0 0 auto; font-size:12px; line-height:15px;
+      font-weight:720; color:#c1e4c7; white-space:nowrap;
+    }
+    .hourly-card .hourly-scroll { min-height:0; padding-bottom:3px; }
+    .hourly-card .hour-cell { min-height:0; padding:0 2px 3px; }
+    .hour-main { display:flex; align-items:center; justify-content:center; min-height:0; }
+    .hour-main .hour-icon { font-size:18px; line-height:1.1; margin-right:4px; }
+    .hour-main .hour-temp { font-size:14px; line-height:1.1; font-weight:700; }
+    .hourly-card .hour-pop {
+      font-size:12px; line-height:15px; font-weight:720;
+      color:#c1e4c7; white-space:nowrap;
+    }
+    @media (min-width:851px) and (orientation:landscape) and (max-height:720px) {
+      .forecast-main .forecast-icon { font-size:16px; }
+      .forecast-main .forecast-temps { font-size:12px; }
+      .forecast .forecast-rain { font-size:11px; line-height:13px; }
+      .hour-main .hour-icon { font-size:16px; }
+      .hour-main .hour-temp { font-size:12px; }
+      .hourly-card .hour-pop { font-size:11px; line-height:13px; }
+      .nav-settings { padding:9px 10px; }
+    }
+    @media (max-width:850px) and (orientation:portrait) {
+      .nav-settings { padding:9px 9px; font-size:12px; }
+    }
   </style>
 </head>
 <body>
@@ -721,16 +764,16 @@
     <header class="topbar">
       <div class="brand">
         <div class="brand-icon">⌂</div>
-        <div><div class="brand-name">HOMEBOARD</div><div class="brand-sub">Kitchen edition · V6</div></div>
+        <div><div class="brand-name">HOMEBOARD</div><div class="brand-sub">Kitchen edition · V6.1</div></div>
       </div>
       <nav class="nav-tabs" aria-label="Dashboard sections">
         <button class="nav-tab active" data-view="home">⌂ Home</button>
         <button class="nav-tab" data-view="calendar">▦ Calendar</button>
         <button class="nav-tab" data-view="music">♫ Music</button>
+        <button class="nav-settings" id="settings-button" type="button" aria-label="Open settings" title="Settings">⚙ Settings</button>
       </nav>
       <div class="header-right">
         <div class="top-status"><span class="status-dot" id="status-dot"></span><span id="connection-status">Starting up</span></div>
-        <button class="icon-button" id="settings-button" aria-label="Open settings" title="Settings">⚙</button>
       </div>
     </header>
 
@@ -1001,12 +1044,16 @@
         var d=new Date(daily.time[i]+'T12:00:00');
         var card=document.createElement('div'); card.className='forecast-day';
         makeText(card,'span','forecast-day-name',i===0?'Today':weekdays[d.getDay()]);
-        makeText(card,'span','forecast-icon',weatherInfo(daily.weather_code[i],1).icon);
+        var mid=document.createElement('div'); mid.className='forecast-main';
+        makeText(mid,'span','forecast-icon',weatherInfo(daily.weather_code[i],1).icon);
         var temps=document.createElement('div'); temps.className='forecast-temps';
         makeText(temps,'span','',Math.round(daily.temperature_2m_max[i])+'° ');
-        makeText(temps,'span','forecast-low',Math.round(daily.temperature_2m_min[i])+'°');card.appendChild(temps);
+        makeText(temps,'span','forecast-low',Math.round(daily.temperature_2m_min[i])+'°');
+        mid.appendChild(temps); card.appendChild(mid);
         var pop=daily.precipitation_probability_max?daily.precipitation_probability_max[i]:null;
-        makeText(card,'span','forecast-rain',pop===null||typeof pop==='undefined'?'':'💧 '+pop+'%');forecast.appendChild(card);
+        var rain=makeText(card,'span','forecast-rain',pop===null||typeof pop==='undefined'?'--':('💧 '+pop+'%'));
+        rain.setAttribute('aria-label',pop===null||typeof pop==='undefined'?'Rain probability unavailable':'Rain probability '+pop+' percent');
+        forecast.appendChild(card);
       }
     }
     function renderHourly(data,targetId) {
@@ -1020,10 +1067,13 @@
         var cell=document.createElement('div');cell.className='hour-cell'+(n===start?' now':'');
         var hour=h.time[n].slice(11,16);
         makeText(cell,'div','hour-time',n===start?'Now':hour);
-        makeText(cell,'div','hour-icon',weatherInfo(h.weather_code?h.weather_code[n]:3,h.is_day?h.is_day[n]:1).icon);
-        makeText(cell,'div','hour-temp',Math.round(h.temperature_2m[n])+'°');
+        var mid=document.createElement('div'); mid.className='hour-main';
+        makeText(mid,'span','hour-icon',weatherInfo(h.weather_code?h.weather_code[n]:3,h.is_day?h.is_day[n]:1).icon);
+        makeText(mid,'span','hour-temp',Math.round(h.temperature_2m[n])+'°');
+        cell.appendChild(mid);
         var pop=h.precipitation_probability?h.precipitation_probability[n]:null;
-        makeText(cell,'div','hour-pop',pop===null||typeof pop==='undefined'?'':('💧 '+pop+'%'));
+        var rain=makeText(cell,'div','hour-pop',pop===null||typeof pop==='undefined'?'--':('💧 '+pop+'%'));
+        rain.setAttribute('aria-label',pop===null||typeof pop==='undefined'?'Rain probability unavailable':'Rain probability '+pop+' percent');
         box.appendChild(cell);
       }
       box.scrollLeft=0;
